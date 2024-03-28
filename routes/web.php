@@ -1,17 +1,24 @@
 <?php
 
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\ContasAPagarController;
+use App\Http\Controllers\ContasAReceberController;
+use App\Models\ContasAPagar;
+use App\Models\ContasAReceber;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Auth::routes();
 
-Route::get('/home', function() {
-    return view('home');
-})->name('home')->middleware('auth');
+Route::resource('clientes', ClienteController::class)->middleware('auth');
+Route::resource('contasReceber', ContasAReceberController::class)->middleware('auth');
+Route::resource('contasPagar', ContasAPagarController::class)->middleware('auth');
+
+
