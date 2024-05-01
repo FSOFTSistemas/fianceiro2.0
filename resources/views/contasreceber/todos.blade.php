@@ -49,13 +49,9 @@
                         <a class="text-warning" title="Editar" href="{{ route('contasReceber.edit', $receber) }}"><i class="fa fa-edit"></i></a>
                     </div>
 
-                    <!-- <div class="col">
-                        <a class="text-danger" title="Excluir" onclick="setaDadosModal({{ $receber->id }})"><i data-toggle="modal" data-target=".bd-delete-modal-lg" class="fa fa-trash"></i></a>
-                    </div> -->
-                    <!--
                     <div class="col">
-                        <a class="text-primary" title="Visualizar" href="{{ route('contasReceber.show', [$receber->id]) }}"><i class="fa fa-eye"></i></a>
-                    </div> -->
+                        <a class="text-danger" title="Excluir" onclick="setaDadosModal({{ $receber->id }})"><i data-toggle="modal" data-target=".bd-delete-modal-lg" class="fa fa-trash"></i></a>
+                    </div>
                 </div>
             </td>
         </tr>
@@ -74,6 +70,52 @@
         </tr>
     </tfoot>
 </table>
+
+<div class="modal fade bd-delete-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <div class="col" style="text-align: center">
+                    <div class="modal-title" style="text: center">
+                        <h4>Apagar este conta?</h4>
+                    </div>
+                </div>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <p style="color: red; text-align: center">Atenção: esssa ação não tem volta !
+                </p>
+
+                <div class="" style="text-align: center">
+
+                    <form action="{{ route('delete-receber') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('DELETE')
+                        <div class="form-group">
+                            <input type="hidden" step="0.01" class="form-control" id="idContaM" name="idContaM" value="">
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" style="width: 50%;" class="btn btn-danger">EXCLUIR</button>
+                        </div>
+                        <br>
+                    </form>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
 @stop
 
 @section('css')
@@ -128,6 +170,10 @@
 <script src="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.1/b-3.0.0/b-colvis-3.0.0/b-html5-3.0.0/b-print-3.0.0/cr-2.0.0/date-1.5.2/r-3.0.0/sr-1.4.0/datatables.min.js">
 </script>
 <script>
+    function setaDadosModal(idContas) {
+        document.getElementById('idContaM').value = idContas;
+    }
+
     $(document).ready(function() {
         $('#contas').DataTable({
             responsive: true,

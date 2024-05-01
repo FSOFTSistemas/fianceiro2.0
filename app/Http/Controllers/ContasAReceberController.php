@@ -135,8 +135,14 @@ class ContasAReceberController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ContasAReceber $contasAReceber)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $conta = ContasAReceber::find($request->idContaM);
+            $conta->delete();
+            return redirect()->route('contasReceber.index')->with('success', 'Deletado com sucesso !');
+        } catch (\Exception $e) {
+            return Redirect()->back()->with('error', 'Erro ao deletar' . $e->getMessage());
+        }
     }
 }
