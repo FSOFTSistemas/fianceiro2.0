@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('cliente_id')->references('id')->on('clientes');
             $table->string('descricao')->nullable();
             $table->decimal('valor', 10, 2);
+            $table->decimal('valor_pago', 10, 2)->nullable();
             $table->date('data_vencimento');
             $table->date('data_recebimento')->nullable();
             $table->enum('status', ['pendente', 'recebido', 'atrasado']);

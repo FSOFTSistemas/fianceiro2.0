@@ -18,6 +18,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 
 Route::resource('clientes', ClienteController::class)->middleware('auth');
+Route::delete('/cliente/del', [ClienteController::class, 'destroy'])->name('delete-cliente')->middleware('auth');
 Route::resource('contasReceber', ContasAReceberController::class)->middleware('auth');
 Route::resource('contasPagar', ContasAPagarController::class)->middleware('auth');
 
