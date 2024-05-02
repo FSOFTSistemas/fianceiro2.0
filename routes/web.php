@@ -25,5 +25,5 @@ Route::delete('/contasReceber/del', [ContasAReceberController::class, 'destroy']
 Route::resource('contasPagar', ContasAPagarController::class)->middleware('auth');
 Route::delete('/contasPagar/del', [ContasAPagarController::class, 'destroy'])->name('delete-contasPagar')->middleware('auth');
 Route::resource('caixa', FluxoDeCaixaController::class)->middleware('auth');
-Route::delete('/caixa/del', [FluxoDeCaixaController::class, 'destroy'])->name('delete-contasPagar')->middleware('auth');
+Route::delete('/caixa/del', [FluxoDeCaixaController::class, 'destroy'])->name('delete-caixa')->middleware('auth');
 
