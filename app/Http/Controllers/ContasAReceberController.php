@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\ContasAReceber;
+use ContasServices;
 use DateTime;
 use Illuminate\Http\Request;
 
@@ -44,7 +45,7 @@ class ContasAReceberController extends Controller
             $vencimento = $request->data_vencimento;
             if ($request->nParcelas > 1) {
                 for ($i = 0; $i < $request->nParcelas; $i++) {
-                    $venc = $this->proximoMes($vencimento);
+                    $venc = ContasServices::proximoMes($vencimento);
                     ContasAReceber::create([
                         'cliente_id'      => $request->cliente_id,
                         'descricao'       => $request->descricao,
@@ -67,26 +68,11 @@ class ContasAReceberController extends Controller
 
             return Redirect()->route('contasReceber.index')->with('success', 'Contas a receber salva com sucesso !');
         } catch (\Exception $e) {
-            dd($e->getMessage());
-            return Redirect()->back()->with('ERRO AO INSERIR CONTA: ' . $e->getMessage());
+            return Redirect()->back()->with('ERRO AO INSERIR CONTA: ' . $e->getMessage())->withInput();
         }
     }
 
-    public function proximoMes($dataOriginal)
-    {
-        $data = new DateTime($dataOriginal);
-        $data->modify('+1 month');
 
-        // $diaDaSemana = $data->format('w'); // 'w' retorna um número de 0 (domingo) a 6 (sábado)
-        // if ($diaDaSemana == 6) {
-        //     $data->modify('+2 days');
-        // }
-        // elseif ($diaDaSemana == 0) {
-        //     $data->modify('+1 day');
-        // }
-
-        return $data->format('Y-m-d');
-    }
 
     /**
      * Display the specified resource.

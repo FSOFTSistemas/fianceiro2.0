@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContasAPagar;
+use ContasServices;
 use Illuminate\Http\Request;
 
 class ContasAPagarController extends Controller
@@ -12,7 +13,8 @@ class ContasAPagarController extends Controller
      */
     public function index()
     {
-        return view('contaspagar.todos');
+        $contas = ContasAPagar::all();
+        return view('contaspagar.todos', ['cPagar' => $contas]);
     }
 
     /**
@@ -20,7 +22,7 @@ class ContasAPagarController extends Controller
      */
     public function create()
     {
-        //
+        return view('contaspagar.new');
     }
 
     /**
@@ -28,7 +30,46 @@ class ContasAPagarController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'descricao'       => 'required',
+                'valor'           => 'required',
+                'data_vencimento' => 'required',
+                'status'          => 'required'
+            ]);
+
+
+
+            $vencimento = $request->data_vencimento;
+            if ($request->nParcelas > 1) {
+                for ($i = 0; $i < $request->nParcelas; $i++) {
+                    $venc = ContasServices::proximoMes($vencimento);
+                    ContasAPagar::create([
+                        'fornecedor'      => $request->fornecedor,
+                        'descricao'       => $request->descricao,
+                        'valor'           => $request->valor,
+                        'data_vencimento' => $venc,
+                        'data_pagamento'  => $request->data_pagamento,
+                        'status'          => $request->status
+                    ]);
+                    $vencimento = $venc;
+                }
+            } else {
+                ContasAPagar::create([
+                    'fornecedor'      => $request->fornecedor,
+                    'descricao'       => $request->descricao,
+                    'valor'           => $request->valor,
+                    'data_vencimento' => $request->data_vencimento,
+                    'data_pagamento'  => $request->data_pagamento,
+                    'status'          => $request->status
+                ]);
+            }
+
+
+            return Redirect()->route('contasPagar.index')->with('success', 'Contas a pagar salva com sucesso !');
+        } catch (\Exception $e) {
+            return Redirect()->back()->with('ERRO AO INSERIR CONTA: ' . $e->getMessage())->withInput();
+        }
     }
 
     /**
@@ -42,24 +83,48 @@ class ContasAPagarController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ContasAPagar $contasAPagar)
+    public function edit($contasAPagar)
     {
-        //
+        $conta = ContasAPagar::find($contasAPagar);
+
+        return view('contaspagar.new', ['conta' => $conta]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ContasAPagar $contasAPagar)
+    public function update(Request $request, $contasAPagar)
     {
-        //
+        try {
+            $conta = ContasAPagar::find($contasAPagar);
+
+            $conta->update([
+                'fornecedor'      => $request->fornecedor,
+                'descricao'       => $request->descricao,
+                'valor'           => $request->valor,
+                'data_vencimento' => $request->data_vencimento,
+                'data_pagamento'  => $request->data_pagamento,
+                'status'          => $request->status
+            ]);
+
+         return Redirect()->route('contasPagar.index')->with('success', 'Contas a pagar salva com sucesso !');
+        } catch (\Exception $e) {
+            return Redirect()->back()->with('ERRO AO INSERIR CONTA: ' . $e->getMessage())->withInput();
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ContasAPagar $contasAPagar)
+    public function destroy(Request $request)
     {
-        //
+
+        try {
+            $conta = ContasAPagar::find($request->idContaM);
+            $conta->delete();
+            return redirect()->route('contasPagar.index')->with('success', 'Deletado com sucesso !');
+        } catch (\Exception $e) {
+            return Redirect()->back()->with('error', 'Erro ao deletar' . $e->getMessage());
+        }
     }
 }

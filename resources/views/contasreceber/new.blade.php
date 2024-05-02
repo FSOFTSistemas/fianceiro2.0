@@ -38,7 +38,7 @@
 
         <div class="form-group">
             <label for="descricao">Descrição:</label>
-            <input type="text" class="form-control" id="descricao" name="descricao" value="{{ $contaAReceber->descricao ?? 'Mensalidade Sistema' }}">
+            <input type="text" class="form-control" id="descricao" name="descricao" value="{{ $contaAReceber->descricao ?? 'Mensalidade Sistema' }}" oninput="this.value = this.value.toUpperCase()">
         </div>
 
         <div class="form-group">
