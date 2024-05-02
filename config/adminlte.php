@@ -316,6 +316,11 @@ return [
             'icon' => 'fas fa-fw fa-file-invoice-dollar'
         ],
         [
+            'text' => 'Fluxo de caixa',
+            'url' => '/caixa',
+            'icon' => 'fas fa-cash-register'
+        ],
+        [
             'text' => 'Configurações',
             'url' => '/config',
             'icon' => 'fas fa-fw fa-cog'
