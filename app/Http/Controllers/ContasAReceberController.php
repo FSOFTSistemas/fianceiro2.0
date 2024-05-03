@@ -131,4 +131,8 @@ class ContasAReceberController extends Controller
             return Redirect()->back()->with('error', 'Erro ao deletar' . $e->getMessage());
         }
     }
+
+    public function informarPagamento(){
+        return view('contasreceber.pagamento');
+    }
 }

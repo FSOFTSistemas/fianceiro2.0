@@ -301,6 +301,11 @@ return [
             'icon' => 'fas fa-fw fa-home'
         ],
         [
+            'text' => 'Informar pagamento',
+            'url' => '/pagamento',
+            'icon' => 'fas fa-fw fa-handshake'
+        ],
+        [
             'text' => 'Clientes',
             'url' => '/clientes',
             'icon' => 'fas fa-fw fa-users'

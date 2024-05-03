@@ -26,4 +26,5 @@ Route::resource('contasPagar', ContasAPagarController::class)->middleware('auth'
 Route::delete('/contasPagar/del', [ContasAPagarController::class, 'destroy'])->name('delete-contasPagar')->middleware('auth');
 Route::resource('caixa', FluxoDeCaixaController::class)->middleware('auth');
 Route::delete('/caixa/del', [FluxoDeCaixaController::class, 'destroy'])->name('delete-lancamento')->middleware('auth');
+Route::get('/pagamento',[ContasAReceberController::class, 'informarPagamento'])->name('pagamento')->middleware('auth');
 
