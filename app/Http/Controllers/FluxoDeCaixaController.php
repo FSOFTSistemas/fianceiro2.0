@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\FluxoDeCaixa;
+use App\Models\PlanoDeContas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Reflector;
 
 class FluxoDeCaixaController extends Controller
 {
@@ -12,8 +15,13 @@ class FluxoDeCaixaController extends Controller
      */
     public function index()
     {
-        $caixa = FluxoDeCaixa::all();
-        return view('fluxoDeCaixa.todos', ['lancamentos' => $caixa]);
+        $caixa = FluxoDeCaixa::with('planoDeContas')
+                // ->whereMonth('data_transacao', now()->month) // Filtra pelo mês atual
+                // ->whereYear('data_transacao', now()->year)  // Filtra pelo ano atual
+                ->orderBy('id', 'desc') // Ordenando os dados
+                ->get();
+        $planos = PlanoDeContas::all();
+        return view('fluxoDeCaixa.todos', ['lancamentos' => $caixa, 'planos' => $planos]);
     }
 
     /**
@@ -29,7 +37,31 @@ class FluxoDeCaixaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $validatedData = $request->validate([
+                'descricao' => 'required|max:255',
+                'valor' => 'required|numeric',
+                'data_transacao' => 'required',
+                'tipo' => 'required|in:entrada,saida',
+                'plano_contas_id' => 'required|integer'
+            ]);
+
+
+            FluxoDeCaixa::create([
+                'descricao' => $request->descricao,
+                'valor' => $request->valor,
+                'data_transacao' => $request->data_transacao,
+                'tipo' => $request->tipo,
+                'plano_contas_id' => $request->plano_contas_id
+            ]);
+
+            return redirect()->route('caixa.index')->with('success', 'Registro criado com sucesso!');
+
+        }catch(\Exception $e){
+            dd($e->getMessage());
+            return redirect()->back()->with('error', 'Não foi possivel cadastrar!'.$e->getMessage())->withInput();
+        }
+
     }
 
     /**
@@ -37,7 +69,7 @@ class FluxoDeCaixaController extends Controller
      */
     public function show(FluxoDeCaixa $fluxoDeCaixa)
     {
-        //
+
     }
 
     /**
@@ -51,16 +83,46 @@ class FluxoDeCaixaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, FluxoDeCaixa $fluxoDeCaixa)
+    public function update(Request $request, $lancamento)
     {
-        //
+        try{
+            $request->validate([
+                'descricao' => 'required|max:255',
+                'valor' => 'required|numeric',
+                'data_transacao' => 'required',
+                'tipo' => 'required|in:entrada,saida',
+                'plano_contas_id' => 'required|integer'
+            ]);
+
+            $lanc = FluxoDeCaixa::find($lancamento);
+
+            $lanc->update([
+                'descricao' => $request->descricao,
+                'valor' => $request->valor,
+                'data_transacao' => $request->data_transacao,
+                'tipo' => $request->tipo,
+                'plano_contas_id' => $request->plano_contas_id
+            ]);
+
+            return Redirect()->route('caixa.index')->with('success', 'Atualizado com susceso !');
+
+        }catch(\Exception $e){
+            dd($e);
+            return Redirect()->back()->with('error','Erro ao atualizar ! : '.$e->getMessage());
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(FluxoDeCaixa $fluxoDeCaixa)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $caixa = FluxoDeCaixa::find($request->idContaM);
+            $caixa->delete();
+            return redirect()->route('caixa.index')->with('success', 'Deletado com sucesso !');
+        } catch (\Exception $e) {
+            return Redirect()->back()->with('error', 'Erro ao deletar : '.$e->getMessage());
+        }
     }
 }
