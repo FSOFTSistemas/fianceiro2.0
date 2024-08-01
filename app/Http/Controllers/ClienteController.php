@@ -128,4 +128,10 @@ class ClienteController extends Controller
             return Redirect()->back()->with('error', 'Erro ao deletar');
         }
     }
+
+    public function getSignatureStatus($clientId)
+    {
+        dd($clientId->length);
+    }
+
 }
