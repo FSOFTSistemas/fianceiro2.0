@@ -37,7 +37,7 @@ class ClienteController extends Controller
 
             $request->validate([
                 'cpf_cnpj'      => 'required',
-                'ie'            => 'required',
+                'ie'            => 'nullable',
                 'nome_fantasia' => 'required',
                 'razao_social'  => 'required',
                 'situacao'      => 'required',
@@ -88,7 +88,7 @@ class ClienteController extends Controller
         try {
             $request->validate([
                 'cpf_cnpj'      => 'required',
-                'ie'            => 'required',
+                'ie'            => 'nullable',
                 'nome_fantasia' => 'required',
                 'razao_social'  => 'required',
                 'situacao'      => 'required',
@@ -111,7 +111,6 @@ class ClienteController extends Controller
 
             return Redirect()->route('clientes.index')->with('success', 'Cliente atualizado com sucesso !');
         } catch (Exception $e) {
-            dd($e->getMessage());
             return Redirect()->back()->with('ERRO AO ATUALIZAR: ' . $e->getMessage());
         }
     }

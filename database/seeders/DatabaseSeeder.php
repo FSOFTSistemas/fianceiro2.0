@@ -14,12 +14,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // Criar o usuário padrão
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@gmail.com',
-            'password' => bcrypt('12345678'), // Não se esqueça de criptografar a senha
+        $this->call([
+            ClienteSeeders::class,
+            ContasAPagar::class,
+            ContasReceber::class,
+            FluxoDeCaixaSeed::class
         ]);
-
     }
 }

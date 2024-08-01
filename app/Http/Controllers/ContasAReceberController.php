@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\ContasAReceber;
-use ContasServices;
-use DateTime;
+use App\Services\ContasServices;
 use Illuminate\Http\Request;
 
 class ContasAReceberController extends Controller

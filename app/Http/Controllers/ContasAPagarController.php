@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContasAPagar;
-use ContasServices;
+use App\Services\ContasServices;
 use Illuminate\Http\Request;
 
 class ContasAPagarController extends Controller
