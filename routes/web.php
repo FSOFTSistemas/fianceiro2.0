@@ -28,3 +28,4 @@ Route::resource('caixa', FluxoDeCaixaController::class)->middleware('auth');
 Route::delete('/caixa/del', [FluxoDeCaixaController::class, 'destroy'])->name('delete-lancamento')->middleware('auth');
 Route::get('/pagamento',[ContasAReceberController::class, 'informarPagamento'])->name('pagamento')->middleware('auth');
 
+
