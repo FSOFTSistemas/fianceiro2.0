@@ -133,6 +133,14 @@ class ContasAReceberController extends Controller
     }
 
     public function informarPagamento(){
-        return view('contasreceber.pagamento');
+        $clientes = Cliente::all();
+        return view('contasreceber.pagamento',['clientes' => $clientes]);
+    }
+
+    public function contasCliente($idCliente){
+        $contas = ContasAReceber::where('cliente_id', $idCliente)->get();
+
+        return view('contasreceber.contas',['Conta' => $contas]);
+
     }
 }

@@ -1,33 +1,33 @@
 @extends('adminlte::page')
 
-@section('title', 'pagamento')
+@section('title', 'Contas')
 
 @section('content_header')
-<h5>Pagamento</h5>
+    <h1>Contas</h1>
 @stop
 
 @section('content')
-<table class="table table-hover" id="clientes" style="width: 100%;">
+<table class="table table-hover" id="contas" style="width: 100%;">
     <thead class="table-primary">
         <tr>
             <th>ID</th>
-            <th>Fantasia</th>
-            <th>Razão Social</th>
+            <th>Descrição</th>
+            <th>Vencimento</th>
         </tr>
     </thead>
     <tbody>
-        @foreach ($clientes as $cli)
+
+        @foreach ($Conta as $c)
         <tr>
-            <td>{{ $cli->id }}</td>
-            <td>{{ $cli->nome_fantasia }}</td>
-            <td>{{ $cli->razao_social  }}</td>
+
+            <td>{{ $c->id }}</td>
+            <td>{{ $c->descricao }}</td>
+            <td>{{ $c->valor  }}</td>
         </tr>
         @endforeach
     </tbody>
 </table>
-
 @stop
-
 @section('css')
 <!-- <link rel="stylesheet" href="/css/admin_custom.css"> -->
 <link href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.1/b-3.0.0/b-colvis-3.0.0/b-html5-3.0.0/b-print-3.0.0/cr-2.0.0/date-1.5.2/r-3.0.0/sr-1.4.0/datatables.min.css" rel="stylesheet">
@@ -43,7 +43,7 @@
 
 
     $(document).ready(function() {
-        var table = $('#clientes').DataTable({
+        var table = $('#contas').DataTable({
             responsive: true,
             pageLength: 50,
             language: {
@@ -51,11 +51,9 @@
             },
         });
 
-        $('#clientes tbody').on('dblclick', 'tr', function() {
+        $('#contas tbody').on('click', 'tr', function() {
             console.log('estou aqui');
             var id = table.row(this).data();
-
-            window.location.href = '/receber-cliente/' + id[0];
 
         });
 
