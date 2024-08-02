@@ -73,9 +73,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Dados de recebimentos por mês
-       
-    
+    // Dados passados do backend para o frontend
+    const labels = @json($recebimentosLabels);
+    const data = @json($recebimentosData);
+
+    // Configuração do gráfico
     const ctxRecebimentos = document.getElementById('recebimentosChart').getContext('2d');
     const recebimentosChart = new Chart(ctxRecebimentos, {
         type: 'bar',
@@ -130,7 +132,7 @@
         },
         options: {
             scales: {
-                y: {
+                y: {    
                     beginAtZero: true
                 }
             }
@@ -139,44 +141,29 @@
 </script>
 
 <!-- Card para a lista de clientes inadimplentes -->
-<div class="card mt-4">
-    <div class="card-header">
-        <h3 class="card-title">Clientes Inadimplentes</h3>
-    </div>
-    <div class="card-body">
-        <table class="table table-bordered">
-            <thead>
+<div class="container mt-5">
+    <h1>Contas Atrasadas</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nome do Cliente</th>
+                <th>Valor</th>
+                <th>Tempo de Atraso</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($contasAtrasadas as $conta)
                 <tr>
-                    <th>Nome</th>
-                    <th>Email</th>
-                    <th>Telefone</th>
+                    <td>{{ $conta->cliente_nome }}</td>
+                    <td>R$ {{ number_format($conta->valor, 2, ',', '.') }}</td>
+                    <td>{{ $conta->tempo_atraso }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                <!-- Lista fictícia de clientes inadimplentes -->
-                <tr>
-                    <td>João Silva</td>
-                    <td>joao.silva@example.com</td>
-                    <td>(11) 99999-9999</td>
-                </tr>
-                <tr>
-                    <td>Maria Oliveira</td>
-                    <td>maria.oliveira@example.com</td>
-                    <td>(21) 98888-8888</td>
-                </tr>
-                <tr>
-                    <td>Pedro Santos</td>
-                    <td>pedro.santos@example.com</td>
-                    <td>(31) 97777-7777</td>
-                </tr>
-                <tr>
-                    <td>Ana Souza</td>
-                    <td>ana.souza@example.com</td>
-                    <td>(41) 96666-6666</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+            @endforeach
+        </tbody>
+    </table>
 </div>
+
+<!-- Inclua o JS do Bootstrap, se necessário -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 @stop

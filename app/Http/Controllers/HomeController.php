@@ -28,24 +28,82 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // Atualiza o status das contas
         $this->atualizarStatusContas();
+    
+        // Conta o número total de clientes
         $clientes = Cliente::count();
-        $dtEnd = new DateTime();
-
-        // Ajusta a data de início para o primeiro dia do mês 12 meses atrás
-        $dtBegin = (clone $dtEnd)->modify('-12 months')->modify('first day of this month');
-
-        // Ajusta a data de término para o último dia do mês atual
-        $dtEnd->modify('last day of this month');
-
-        // Formata as datas para o formato Y-m-d
-        $startDate = $dtBegin->format('Y-m-d');
-        $endDate = $dtEnd->format('Y-m-d');
-        $recebimentos = ContasAReceber::select(DB::raw('DATE_FORMAT(data_recebimento, "%m/%Y") as mes_ano'), DB::raw('sum(valor) as valortotal'))->whereNotNull('data_recebimento')->whereBetween('data_recebimento', [$startDate, $endDate])->groupBy(DB::raw('DATE_FORMAT(data_recebimento, "%m/%Y")'))->get();
+    
+        // Define as datas de início e fim para um intervalo de 12 meses
+        $dtEnd = Carbon::now();
+        $dtBegin = $dtEnd->copy()->subMonths(12)->startOfMonth();
+        $dtEnd = $dtEnd->endOfMonth();
+    
+        // Converte as datas para o formato de string 'YYYY-MM-DD'
+        $startDate = $dtBegin->toDateString();
+        $endDate = $dtEnd->toDateString();
+    
+        // Consulta de recebimentos para o gráfico
+        $recebimentos = ContasAReceber::selectRaw('DATE_FORMAT(data_recebimento, "%m/%Y") as mes_ano, sum(valor) as valortotal')
+            ->whereNotNull('data_recebimento')
+            ->whereBetween('data_recebimento', [$startDate, $endDate])
+            ->groupByRaw('DATE_FORMAT(data_recebimento, "%m/%Y")')
+            ->get();
+    
+        // Consulta para a tabela de contas atrasadas
+        $contasAtrasadas = ContasAReceber::where('status', 'atrasado')
+            ->join('clientes', 'contas_a_recebers.cliente_id', '=', 'clientes.id')
+            ->select(
+                'clientes.nome_fantasia as cliente_nome',
+                'contas_a_recebers.valor',
+                'contas_a_recebers.data_vencimento'
+            )
+            ->get()
+            ->map(function($conta) {
+                $dataVencimento = Carbon::parse($conta->data_vencimento);
+                $dataAtual = Carbon::now();
+    
+                // Calcula a diferença detalhada entre as datas
+                $diferenca = $dataVencimento->diff($dataAtual);
+    
+                $mesesAtraso = $diferenca->m;
+                $diasAtraso = $diferenca->d;
+    
+                // Formatação condicional para o tempo de atraso
+                if ($mesesAtraso > 0 && $diasAtraso > 0) {
+                    $conta->tempo_atraso = "{$mesesAtraso} meses {$diasAtraso} dias";
+                } elseif ($mesesAtraso > 0) {
+                    $conta->tempo_atraso = "{$mesesAtraso} meses";
+                } else {
+                    $conta->tempo_atraso = "{$diasAtraso} dias";
+                }
+                
+                return $conta;
+            });
+    
+        // Calcula o total de valores atrasados
         $atrasados = ContasAReceber::where('status', 'atrasado')->sum('valor');
+    
+        // Calcula a inadimplência
         $inadiplencia = $this->calcularInadimplencia();
-        return view('home', ['clientes' => $clientes, 'tt_atradado' => $atrasados, 'inadiplencia' => $inadiplencia]);
+    
+        // Prepara os dados para o gráfico
+        $labels = $recebimentos->pluck('mes_ano')->toArray();
+        $data = $recebimentos->pluck('valortotal')->toArray();
+    
+        // Retorna a view 'home' com os dados necessários
+        return view('home', [
+            'clientes' => $clientes,
+            'tt_atradado' => $atrasados,
+            'inadiplencia' => $inadiplencia,
+            'recebimentosLabels' => $labels,
+            'recebimentosData' => $data,
+            'contasAtrasadas' => $contasAtrasadas
+        ]);
     }
+    
+    
+    
 
     public function calcularInadimplencia($ano = null, $mes = null)
     {
