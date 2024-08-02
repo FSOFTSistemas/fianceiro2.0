@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
-        $exceptions->render(function (Exception $e, Request $request) {
+        $exceptions->render(function (Throwable $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
                     'message' => 'Ocorreu um erro inesperado, tente novamente em outro momento! ' . $e->getMessage()

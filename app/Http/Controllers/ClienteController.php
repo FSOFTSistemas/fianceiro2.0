@@ -129,9 +129,4 @@ class ClienteController extends Controller
         }
     }
 
-    public function getSignatureStatus($clientId)
-    {
-        dd($clientId->length);
-    }
-
 }
