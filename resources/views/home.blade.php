@@ -74,9 +74,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Dados de recebimentos por mês
-    const labels = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-    const data = [1500, 2000, 1800, 2200, 2500, 2300, 2100, 2600, 2400, 2700, 2900, 3000];
-
+       
+    
     const ctxRecebimentos = document.getElementById('recebimentosChart').getContext('2d');
     const recebimentosChart = new Chart(ctxRecebimentos, {
         type: 'bar',
