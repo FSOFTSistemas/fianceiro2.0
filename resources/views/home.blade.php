@@ -112,10 +112,12 @@
 </div>
 
 <script>
-    // Dados do gráfico de acompanhamento
-    const totalAmount = 10000; // Montante total
-    const receivedAmount = 6000; // Valor já recebido
-    const remainingAmount = totalAmount - receivedAmount; // Valor que falta receber
+    // Dados passados do backend para o frontend
+    const totalAmount = @json($totalAmount); // Montante total
+    const receivedAmount = @json($receivedAmount); // Valor já recebido
+    
+    // Calcula o valor que falta receber
+    const remainingAmount = Math.max(0, totalAmount - receivedAmount);
 
     const ctxAcompanhamento = document.getElementById('acompanhamentoChart').getContext('2d');
     const acompanhamentoChart = new Chart(ctxAcompanhamento, {
@@ -132,8 +134,19 @@
         },
         options: {
             scales: {
-                y: {    
-                    beginAtZero: true
+                y: {
+                    beginAtZero: true,
+                    max: totalAmount, // Define o valor máximo do eixo Y
+                    title: {
+                        display: true,
+                        text: 'Valor (em R$)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Categoria'
+                    }
                 }
             }
         }

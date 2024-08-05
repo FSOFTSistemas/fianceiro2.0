@@ -43,7 +43,7 @@ class HomeController extends Controller
         $startDate = $dtBegin->toDateString();
         $endDate = $dtEnd->toDateString();
     
-        // Consulta de recebimentos para o gráfico
+        // Consulta de recebimentos para o gráfico de recebimentos por mês
         $recebimentos = ContasAReceber::selectRaw('DATE_FORMAT(data_recebimento, "%m/%Y") as mes_ano, sum(valor) as valortotal')
             ->whereNotNull('data_recebimento')
             ->whereBetween('data_recebimento', [$startDate, $endDate])
@@ -87,7 +87,17 @@ class HomeController extends Controller
         // Calcula a inadimplência
         $inadiplencia = $this->calcularInadimplencia();
     
-        // Prepara os dados para o gráfico
+        // Calcula o montante total a receber
+        $totalAmount = ContasAReceber::sum('valor');
+    
+        // Calcula o valor já recebido
+        $receivedAmount = ContasAReceber::whereNotNull('data_recebimento')->sum('valor');
+    
+        // Calcula o valor que falta receber
+        $remainingAmount = max(0, $totalAmount - $receivedAmount);
+        // dd($remainingAmount);
+    
+        // Prepara os dados para o gráfico de recebimentos por mês
         $labels = $recebimentos->pluck('mes_ano')->toArray();
         $data = $recebimentos->pluck('valortotal')->toArray();
     
@@ -98,9 +108,13 @@ class HomeController extends Controller
             'inadiplencia' => $inadiplencia,
             'recebimentosLabels' => $labels,
             'recebimentosData' => $data,
-            'contasAtrasadas' => $contasAtrasadas
+            'contasAtrasadas' => $contasAtrasadas,
+            'totalAmount' => $totalAmount,
+            'receivedAmount' => $receivedAmount,
+            'remainingAmount' => $remainingAmount
         ]);
     }
+    
     
     
     
