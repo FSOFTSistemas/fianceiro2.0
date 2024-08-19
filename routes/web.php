@@ -4,8 +4,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ContasAPagarController;
 use App\Http\Controllers\ContasAReceberController;
 use App\Http\Controllers\FluxoDeCaixaController;
-use App\Models\ContasAPagar;
-use App\Models\ContasAReceber;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -26,5 +25,5 @@ Route::resource('contasPagar', ContasAPagarController::class)->middleware('auth'
 Route::delete('/contasPagar/del', [ContasAPagarController::class, 'destroy'])->name('delete-contasPagar')->middleware('auth');
 Route::resource('caixa', FluxoDeCaixaController::class)->middleware('auth');
 Route::delete('/caixa/del', [FluxoDeCaixaController::class, 'destroy'])->name('delete-lancamento')->middleware('auth');
-Route::get('/pagamento',[ContasAReceberController::class, 'informarPagamento'])->name('pagamento')->middleware('auth');
 
+Route::get('/pagamentos', [PaymentController::class, 'index'])->name('pagamentos.index')->middleware('auth');

@@ -302,7 +302,7 @@ return [
         ],
         [
             'text' => 'Informar pagamento',
-            'url' => '/pagamento',
+            'url' => '/pagamentos',
             'icon' => 'fas fa-fw fa-handshake'
         ],
         [
