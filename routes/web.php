@@ -16,14 +16,16 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::middleware(['auth'])->group(function () {
+    Route::resource('clientes', ClienteController::class);
+    Route::delete('/cliente/del', [ClienteController::class, 'destroy'])->name('delete-cliente');
+    Route::resource('contasReceber', ContasAReceberController::class);
+    Route::delete('/contasReceber/del', [ContasAReceberController::class, 'destroy'])->name('delete-receber');
+    Route::resource('contasPagar', ContasAPagarController::class);
+    Route::delete('/contasPagar/del', [ContasAPagarController::class, 'destroy'])->name('delete-contasPagar');
+    Route::resource('caixa', FluxoDeCaixaController::class);
+    Route::delete('/caixa/del', [FluxoDeCaixaController::class, 'destroy'])->name('delete-lancamento');
 
-Route::resource('clientes', ClienteController::class)->middleware('auth');
-Route::delete('/cliente/del', [ClienteController::class, 'destroy'])->name('delete-cliente')->middleware('auth');
-Route::resource('contasReceber', ContasAReceberController::class)->middleware('auth');
-Route::delete('/contasReceber/del', [ContasAReceberController::class, 'destroy'])->name('delete-receber')->middleware('auth');
-Route::resource('contasPagar', ContasAPagarController::class)->middleware('auth');
-Route::delete('/contasPagar/del', [ContasAPagarController::class, 'destroy'])->name('delete-contasPagar')->middleware('auth');
-Route::resource('caixa', FluxoDeCaixaController::class)->middleware('auth');
-Route::delete('/caixa/del', [FluxoDeCaixaController::class, 'destroy'])->name('delete-lancamento')->middleware('auth');
-
-Route::get('/pagamentos', [PaymentController::class, 'index'])->name('pagamentos.index')->middleware('auth');
+    Route::get('/pagamentos', [PaymentController::class, 'index'])->name('pagamentos.index');
+    Route::post('/pagamentos-receber', [PaymentController::class, 'store'])->name('pagamentos.store');
+});
