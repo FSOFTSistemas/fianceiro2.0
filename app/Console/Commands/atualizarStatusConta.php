@@ -40,10 +40,5 @@ class atualizarStatusConta extends Command
             $conta->save();
         }
 
-        // Retorna resposta de sucesso com o número de contas atualizadas
-        return response()->json([
-            'message' => 'Status atualizado com sucesso.',
-            'contasAtualizadas' => count($contas)
-        ]);
     }
 }
