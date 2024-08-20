@@ -31,7 +31,7 @@ class atualizarStatusConta extends Command
 
         // Seleciona contas não atrasadas com data de vencimento anterior a hoje
         $contas = ContasAReceber::where('data_vencimento', '<', $hoje)
-            ->where('status', '!=', 'atrasado')
+            ->where('status', '=', 'pendente')
             ->get();
 
         // Atualiza o status para 'atrasado'

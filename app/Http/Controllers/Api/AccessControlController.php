@@ -3,12 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cliente;
 
 class AccessControlController extends Controller
 {
 
-    public function getSignatureStatus($clientId)
+    public function getSignatureStatus($customer_cnpj_cpf)
     {
-
+        $customer = Cliente::where('cpf_cnpj', $customer_cnpj_cpf)->first();
+        if (isset($customer) && $customer->situacao == 'Ativa') {
+            $dueDate = $customer->installments->where('status', 'atrasado')->first()->data_vencimento;
+            return response()->json(['customer' => $customer->nome_fantasia, 'dueDate' => $dueDate], 200);
+        }
+        return response()->json(['message' => 'Cliente não encontrado ou inativo para cobrança!'], 404);
     }
 }
