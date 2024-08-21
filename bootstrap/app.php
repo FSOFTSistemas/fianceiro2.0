@@ -18,10 +18,14 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
-        $exceptions->render(function (NotFoundHttpException $e) {
-            return response()->json([
-                'message' => 'O recurso não foi encontrado! ' . $e->getMessage()
-            ], 404);
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'message' => 'O recurso não foi encontrado! ' . $e->getMessage()
+                ], 404);
+            }
+            sweetalert()->error('O recurso não foi encontrado! ' . $e->getMessage());
+            return redirect()->back();
         });
 
         $exceptions->render(function (Throwable $e, Request $request) {
