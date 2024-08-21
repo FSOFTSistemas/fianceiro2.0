@@ -30,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     'message' => 'Ocorreu um erro inesperado, tente novamente em outro momento! ' . $e->getMessage()
                 ], 500);
             }
-            return redirect()->back()->with('error', 'Ocorreu um erro inesperado, tente novamente em outro momento! <br>' . $e->getMessage());
+            sweetalert()->error('Ocorreu um erro inesperado, tente novamente em outro momento! <br>' . $e->getMessage());
+            return redirect()->back();
         });
     })->create();

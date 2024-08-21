@@ -30,46 +30,38 @@ class ContasAPagarController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                'descricao'       => 'required',
-                'valor'           => 'required',
-                'data_vencimento' => 'required',
-                'status'          => 'required'
-            ]);
-
-
-
-            $vencimento = $request->data_vencimento;
-            if ($request->nParcelas > 1) {
-                for ($i = 0; $i < $request->nParcelas; $i++) {
-                    $venc = ContasServices::proximoMes($vencimento);
-                    ContasAPagar::create([
-                        'fornecedor'      => $request->fornecedor,
-                        'descricao'       => $request->descricao,
-                        'valor'           => $request->valor,
-                        'data_vencimento' => $venc,
-                        'data_pagamento'  => $request->data_pagamento,
-                        'status'          => $request->status
-                    ]);
-                    $vencimento = $venc;
-                }
-            } else {
+        $request->validate([
+            'descricao'       => 'required',
+            'valor'           => 'required',
+            'data_vencimento' => 'required',
+            'status'          => 'required'
+        ]);
+        $vencimento = $request->data_vencimento;
+        if ($request->nParcelas > 1) {
+            for ($i = 0; $i < $request->nParcelas; $i++) {
+                $venc = ContasServices::proximoMes($vencimento);
                 ContasAPagar::create([
                     'fornecedor'      => $request->fornecedor,
                     'descricao'       => $request->descricao,
                     'valor'           => $request->valor,
-                    'data_vencimento' => $request->data_vencimento,
+                    'data_vencimento' => $venc,
                     'data_pagamento'  => $request->data_pagamento,
                     'status'          => $request->status
                 ]);
+                $vencimento = $venc;
             }
-
-
-            return Redirect()->route('contasPagar.index')->with('success', 'Contas a pagar salva com sucesso !');
-        } catch (\Exception $e) {
-            return Redirect()->back()->with('ERRO AO INSERIR CONTA: ' . $e->getMessage())->withInput();
+        } else {
+            ContasAPagar::create([
+                'fornecedor'      => $request->fornecedor,
+                'descricao'       => $request->descricao,
+                'valor'           => $request->valor,
+                'data_vencimento' => $request->data_vencimento,
+                'data_pagamento'  => $request->data_pagamento,
+                'status'          => $request->status
+            ]);
         }
+        sweetalert('Contas a pagar salva com sucesso !');
+        return Redirect()->route('contasPagar.index');
     }
 
     /**
@@ -95,22 +87,17 @@ class ContasAPagarController extends Controller
      */
     public function update(Request $request, $contasAPagar)
     {
-        try {
-            $conta = ContasAPagar::find($contasAPagar);
-
-            $conta->update([
-                'fornecedor'      => $request->fornecedor,
-                'descricao'       => $request->descricao,
-                'valor'           => $request->valor,
-                'data_vencimento' => $request->data_vencimento,
-                'data_pagamento'  => $request->data_pagamento,
-                'status'          => $request->status
-            ]);
-
-         return Redirect()->route('contasPagar.index')->with('success', 'Contas a pagar salva com sucesso !');
-        } catch (\Exception $e) {
-            return Redirect()->back()->with('ERRO AO INSERIR CONTA: ' . $e->getMessage())->withInput();
-        }
+        $conta = ContasAPagar::find($contasAPagar);
+        $conta->update([
+            'fornecedor'      => $request->fornecedor,
+            'descricao'       => $request->descricao,
+            'valor'           => $request->valor,
+            'data_vencimento' => $request->data_vencimento,
+            'data_pagamento'  => $request->data_pagamento,
+            'status'          => $request->status
+        ]);
+        sweetalert('Contas a pagar salva com sucesso !');
+        return Redirect()->route('contasPagar.index');
     }
 
     /**
@@ -118,13 +105,9 @@ class ContasAPagarController extends Controller
      */
     public function destroy(Request $request)
     {
-
-        try {
-            $conta = ContasAPagar::find($request->idContaM);
-            $conta->delete();
-            return redirect()->route('contasPagar.index')->with('success', 'Deletado com sucesso !');
-        } catch (\Exception $e) {
-            return Redirect()->back()->with('error', 'Erro ao deletar' . $e->getMessage());
-        }
+        $conta = ContasAPagar::find($request->idContaM);
+        $conta->delete();
+        sweetalert('Deletado com sucesso !');
+        return redirect()->route('contasPagar.index');
     }
 }

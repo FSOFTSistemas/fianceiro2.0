@@ -3,11 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
-use Exception;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use PhpParser\Node\Stmt\Return_;
 
 class ClienteController extends Controller
 {
@@ -33,35 +29,30 @@ class ClienteController extends Controller
      */
     public function store(Request $request)
     {
-        try {
+        $request->validate([
+            'cpf_cnpj'      => 'required',
+            'ie'            => 'nullable',
+            'nome_fantasia' => 'required',
+            'razao_social'  => 'required',
+            'situacao'      => 'required',
+            'vencimento'    => 'required'
+        ]);
 
-            $request->validate([
-                'cpf_cnpj'      => 'required',
-                'ie'            => 'nullable',
-                'nome_fantasia' => 'required',
-                'razao_social'  => 'required',
-                'situacao'      => 'required',
-                'vencimento'    => 'required'
-            ]);
-
-            Cliente::create([
-                'cpf_cnpj'      => $request->cpf_cnpj,
-                'ie'            => $request->ie,
-                'nome_fantasia' => $request->nome_fantasia,
-                'razao_social'  => $request->razao_social,
-                'situacao'      => $request->situacao,
-                'vencimento'    =>  $request->vencimento,
-                'cep'           => $request->cep,
-                'rua'           => $request->rua,
-                'bairro'        => $request->bairro,
-                'cidade'        => $request->cidade,
-                'estado'        => $request->estado
-            ]);
-
-            return Redirect()->route('clientes.index')->with('success', 'Cliente salvo com sucesso !');
-        } catch (Exception $e) {
-            return Redirect()->back()->with('ERRO AO INSERIR CLIENTE: ' . $e->getMessage());
-        }
+        Cliente::create([
+            'cpf_cnpj'      => $request->cpf_cnpj,
+            'ie'            => $request->ie,
+            'nome_fantasia' => $request->nome_fantasia,
+            'razao_social'  => $request->razao_social,
+            'situacao'      => $request->situacao,
+            'vencimento'    =>  $request->vencimento,
+            'cep'           => $request->cep,
+            'rua'           => $request->rua,
+            'bairro'        => $request->bairro,
+            'cidade'        => $request->cidade,
+            'estado'        => $request->estado
+        ]);
+        sweetalert('Cliente foi salvo com sucesso!');
+        return Redirect()->route('clientes.index');
     }
 
     /**
@@ -85,34 +76,30 @@ class ClienteController extends Controller
      */
     public function update(Request $request, $cliente)
     {
-        try {
-            $request->validate([
-                'cpf_cnpj'      => 'required',
-                'ie'            => 'nullable',
-                'nome_fantasia' => 'required',
-                'razao_social'  => 'required',
-                'situacao'      => 'required',
-                'vencimento'    => 'required'
-            ]);
-            $cliente = Cliente::find($cliente);
-            $cliente->update([
-                'cpf_cnpj'      => $request->cpf_cnpj,
-                'ie'            => $request->ie,
-                'nome_fantasia' => $request->nome_fantasia,
-                'razao_social'  => $request->razao_social,
-                'situacao'      => $request->situacao,
-                'vencimento'    =>  $request->vencimento,
-                'cep'           => $request->cep,
-                'rua'           => $request->rua,
-                'bairro'        => $request->bairro,
-                'cidade'        => $request->cidade,
-                'estado'        => $request->estado
-            ]);
-
-            return Redirect()->route('clientes.index')->with('success', 'Cliente atualizado com sucesso !');
-        } catch (Exception $e) {
-            return Redirect()->back()->with('ERRO AO ATUALIZAR: ' . $e->getMessage());
-        }
+        $request->validate([
+            'cpf_cnpj'      => 'required',
+            'ie'            => 'nullable',
+            'nome_fantasia' => 'required',
+            'razao_social'  => 'required',
+            'situacao'      => 'required',
+            'vencimento'    => 'required'
+        ]);
+        $cliente = Cliente::find($cliente);
+        $cliente->update([
+            'cpf_cnpj'      => $request->cpf_cnpj,
+            'ie'            => $request->ie,
+            'nome_fantasia' => $request->nome_fantasia,
+            'razao_social'  => $request->razao_social,
+            'situacao'      => $request->situacao,
+            'vencimento'    =>  $request->vencimento,
+            'cep'           => $request->cep,
+            'rua'           => $request->rua,
+            'bairro'        => $request->bairro,
+            'cidade'        => $request->cidade,
+            'estado'        => $request->estado
+        ]);
+        sweetalert('Cliente atualizado com sucesso !');
+        return Redirect()->route('clientes.index');
     }
 
     /**
@@ -120,13 +107,9 @@ class ClienteController extends Controller
      */
     public function destroy(Request $request)
     {
-        try {
-            $cliente = Cliente::find($request->idClienteM);
-            $cliente->delete();
-            return redirect()->route('clientes.index')->with('success', 'Deletado com sucesso !');
-        } catch (Exception $e) {
-            return Redirect()->back()->with('error', 'Erro ao deletar');
-        }
+        $cliente = Cliente::find($request->idClienteM);
+        $cliente->delete();
+        sweetalert('Cliente foi deletado com sucesso!');
+        return redirect()->route('clientes.index');
     }
-
 }
