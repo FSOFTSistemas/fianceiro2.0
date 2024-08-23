@@ -21,13 +21,15 @@ class AccessControlController extends Controller
                     'expires' => true,
                     'expired_on' => $expiredInstallments->first()->data_vencimento
                 ];
+                $value = $expiredInstallments->first()->valor;
             } else {
                 $due = [
                     'expires' => false,
                     'expires_in' => $installments->where('status', 'pendente')->first()->data_vencimento
                 ];
+                $value = $installments->where('status', 'pendente')->first()->valor;
             }
-            return response()->json(['customer' => $customer->nome_fantasia, 'due' => $due], 200);
+            return response()->json(['customer' => $customer->nome_fantasia, 'due' => $due, 'value' => $value], 200);
         }
         return response()->json(['message' => 'Cliente não encontrado ou inativo para cobrança!'], 404);
     }
