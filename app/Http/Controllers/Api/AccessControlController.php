@@ -33,4 +33,16 @@ class AccessControlController extends Controller
         }
         return response()->json(['message' => 'Cliente não encontrado ou inativo para cobrança!'], 404);
     }
+
+    public function getPaymentHistory($customer_cnpj_cpf)
+    {
+        $customer_cnpj_cpf = FormatCpfCnpj::format($customer_cnpj_cpf);
+        $customer = Cliente::where('cpf_cnpj', $customer_cnpj_cpf)->first();
+        if (isset($customer) && $customer->situacao == 'Ativa') {
+            $installmentsPaid = $customer->installments->where('status', 'recebido');
+            return response()->json(['payments' => $installmentsPaid], 200);
+        }
+        return response()->json(['message' => 'Cliente não encontrado ou inativo para cobrança!'], 404);
+    }
+
 }
