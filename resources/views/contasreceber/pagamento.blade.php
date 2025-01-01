@@ -9,6 +9,7 @@
 @section('content')
 <table class="table table-hover" id="clientes" style="width: 100%;">
     <thead class="table-primary">
+        
         <tr>
             <th>ID</th>
             <th>Fantasia</th>
