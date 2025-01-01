@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('contas_a_recebers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('cliente_id');
-            $table->foreign('cliente_id')->references('id')->on('clientes');
+            $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
             $table->string('descricao')->nullable();
             $table->decimal('valor', 10, 2);
             $table->decimal('valor_pago', 10, 2)->nullable();

@@ -20,10 +20,10 @@ class PaymentController extends Controller
     public function index()
     {
         $contasAReceber = ContasAReceber::whereMonth('data_vencimento', '<=', Carbon::now()->month)
-        ->whereYear('data_vencimento', '<=', Carbon::now()->year)
-        ->where('status', 'pendente')
-        ->orWhere('status', 'atrasado')
-        ->get();
+            ->whereYear('data_vencimento', '<=', Carbon::now()->year)
+            ->where('status', 'pendente')
+            ->orWhere('status', 'atrasado')
+            ->get();
         $paymentMethods = PaymentMethodEnum::cases();
         $accountPlans = PlanoDeContas::all();
         return view('payment.index', ['contasAReceber' => $contasAReceber, 'paymentMethods' => $paymentMethods, 'accountPlans' => $accountPlans]);
@@ -61,7 +61,8 @@ class PaymentController extends Controller
                 'plano_contas_id' => $data['account_plan_id']
             ]);
         });
-        return Redirect::route('pagamentos.index')->with('success', 'Pagamento efetuado com sucesso!');
+        sweetalert('Pagamento efetuado com sucesso!');
+        return Redirect::route('pagamentos.index');
     }
 
     /**
