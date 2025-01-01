@@ -27,7 +27,7 @@
         <tr>
             <td>{{ $lancamento->id }}</td>
             <td>{{ $lancamento->descricao }}</td>
-            <td>{{ date('d/m/Y', strtotime($lancamento->data)) }}</td>
+            <td>{{ date('d/m/Y', strtotime($lancamento->data_transacao)) }}</td>
             <td>{{ $lancamento->valor }}</td>
             <td>
                 <span class="<?php echo $lancamento->tipo == 'entrada' ? 'entrada' : ($lancamento->tipo == 'entrada' ? 'entrada' : 'saida'); ?>" id="tipo_lanc">{{ $lancamento->tipo }}

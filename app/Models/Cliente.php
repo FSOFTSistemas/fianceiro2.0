@@ -23,5 +23,9 @@ class Cliente extends Model
         'cep',
     ];
 
-    
+    public function installments()
+    {
+        return $this->hasMany(ContasAReceber::class, 'cliente_id');
+    }
+
 }

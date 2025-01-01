@@ -110,7 +110,7 @@ return [
     */
 
     'preloader' => [
-        'enabled' => true,
+        'enabled' => false,
         'mode' => 'fullscreen',
         'img' => [
             'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
@@ -302,7 +302,7 @@ return [
         ],
         [
             'text' => 'Informar pagamento',
-            'url' => '/pagamento',
+            'url' => '/pagamentos',
             'icon' => 'fas fa-fw fa-handshake'
         ],
         [

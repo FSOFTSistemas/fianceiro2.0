@@ -8,9 +8,11 @@
         "php": "^8.2",
         "jeroennoten/laravel-adminlte": "^3.11",
         "laravel/framework": "^11.0",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
         "livewire/livewire": "^3.4",
+        "php-flasher/flasher-sweetalert-laravel": "^2.0",
         "spatie/laravel-permission": "^6.4"
     },
     "require-dev": {

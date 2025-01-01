@@ -32,43 +32,37 @@ class ContasAReceberController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-
-            $request->validate([
-                'nParcelas'       => 'required',
-                'cliente_id'      => 'required',
-                'valor'           => 'required',
-                'data_vencimento' => 'required',
-                'status'          => 'required'
-            ]);
-            $vencimento = $request->data_vencimento;
-            if ($request->nParcelas > 1) {
-                for ($i = 0; $i < $request->nParcelas; $i++) {
-                    $venc = ContasServices::proximoMes($vencimento);
-                    ContasAReceber::create([
-                        'cliente_id'      => $request->cliente_id,
-                        'descricao'       => $request->descricao,
-                        'valor'           => $request->valor,
-                        'data_vencimento' => $venc,
-                        'status'          => $request->status
-                    ]);
-                    $vencimento = $venc;
-                }
-            }else{
+        $request->validate([
+            'nParcelas'       => 'required',
+            'cliente_id'      => 'required',
+            'valor'           => 'required',
+            'data_vencimento' => 'required',
+            'status'          => 'required'
+        ]);
+        $vencimento = $request->data_vencimento;
+        if ($request->nParcelas > 1) {
+            for ($i = 0; $i < $request->nParcelas; $i++) {
+                $venc = ContasServices::proximoMes($vencimento);
                 ContasAReceber::create([
                     'cliente_id'      => $request->cliente_id,
                     'descricao'       => $request->descricao,
                     'valor'           => $request->valor,
-                    'data_vencimento' => $request->data_vencimento,
+                    'data_vencimento' => $venc,
                     'status'          => $request->status
                 ]);
+                $vencimento = $venc;
             }
-
-
-            return Redirect()->route('contasReceber.index')->with('success', 'Contas a receber salva com sucesso !');
-        } catch (\Exception $e) {
-            return Redirect()->back()->with('ERRO AO INSERIR CONTA: ' . $e->getMessage())->withInput();
+        } else {
+            ContasAReceber::create([
+                'cliente_id'      => $request->cliente_id,
+                'descricao'       => $request->descricao,
+                'valor'           => $request->valor,
+                'data_vencimento' => $request->data_vencimento,
+                'status'          => $request->status
+            ]);
         }
+        sweetalert('Contas a receber salva com sucesso!');
+        return Redirect()->route('contasReceber.index');
     }
 
 
@@ -96,25 +90,19 @@ class ContasAReceberController extends Controller
      */
     public function update(Request $request, $contasAReceber)
     {
-        try{
-            $conta = ContasAReceber::find($contasAReceber);
-
-            $request->validate([
-                'valor'           => 'required',
-                'data_vencimento' => 'required',
-                'status'          => 'required'
-            ]);
-
-            $conta->update([
-                'valor'           => $request->valor,
-                'data_vencimento' => $request->data_vencimento,
-                'status'          => $request->status
-            ]);
-
-            return Redirect()->route('contasReceber.index')->with('success', 'Contas a receber alterada com sucesso !');
-        }catch(\Exception $e){
-            return Redirect()->back()->with('ERRO AO ALTERAR CONTA: ' . $e->getMessage());
-        }
+        $conta = ContasAReceber::find($contasAReceber);
+        $request->validate([
+            'valor'           => 'required',
+            'data_vencimento' => 'required',
+            'status'          => 'required'
+        ]);
+        $conta->update([
+            'valor'           => $request->valor,
+            'data_vencimento' => $request->data_vencimento,
+            'status'          => $request->status
+        ]);
+        sweetalert('Contas a receber alterada com sucesso!');
+        return Redirect()->route('contasReceber.index');
     }
 
     /**
