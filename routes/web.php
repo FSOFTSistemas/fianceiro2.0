@@ -25,7 +25,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/contasPagar/del', [ContasAPagarController::class, 'destroy'])->name('delete-contasPagar');
     Route::resource('caixa', FluxoDeCaixaController::class);
     Route::delete('/caixa/del', [FluxoDeCaixaController::class, 'destroy'])->name('delete-lancamento');
-
     Route::get('/pagamentos', [PaymentController::class, 'index'])->name('pagamentos.index');
     Route::post('/pagamentos-receber', [PaymentController::class, 'store'])->name('pagamentos.store');
 });
+

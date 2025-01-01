@@ -110,9 +110,24 @@ class ContasAReceberController extends Controller
      */
     public function destroy(Request $request)
     {
-        $conta = ContasAReceber::find($request->idContaM);
-        $conta->delete();
-        sweetalert('Deletado com sucesso !');
-        return redirect()->route('contasReceber.index');
+        try {
+            $conta = ContasAReceber::find($request->idContaM);
+            $conta->delete();
+            return redirect()->route('contasReceber.index')->with('success', 'Deletado com sucesso !');
+        } catch (\Exception $e) {
+            return Redirect()->back()->with('error', 'Erro ao deletar' . $e->getMessage());
+        }
+    }
+
+    public function informarPagamento(){
+        $clientes = Cliente::all();
+        return view('contasreceber.pagamento',['clientes' => $clientes]);
+    }
+
+    public function contasCliente($idCliente){
+        $contas = ContasAReceber::where('cliente_id', $idCliente)->get();
+
+        return view('contasreceber.contas',['Conta' => $contas]);
+
     }
 }
