@@ -32,6 +32,8 @@ class HomeController extends Controller
     {
         // Atualiza o status das contas
         $this->atualizarStatusContas();
+        $currentMonthStart = Carbon::now()->startOfMonth();
+        $currentMonthEnd = Carbon::now()->endOfMonth();
 
         // Conta o número total de clientes
         $clientes = Cliente::count();
@@ -90,10 +92,11 @@ class HomeController extends Controller
         $inadiplencia = $this->calcularInadimplencia();
 
         // Calcula o montante total a receber
-        $totalAmount = ContasAReceber::sum('valor');
+        $totalAmount = ContasAReceber::whereBetween('data_vencimento', [$currentMonthStart, $currentMonthEnd])
+            ->sum('valor');
 
         // Calcula o valor já recebido
-        $receivedAmount = ContasAReceber::whereNotNull('data_recebimento')->sum('valor');
+        $receivedAmount = ContasAReceber::whereBetween('data_vencimento', [$currentMonthStart, $currentMonthEnd])->where('status', 'recebido')->sum('valor');
 
         // Calcula o valor que falta receber
         $remainingAmount = max(0, $totalAmount - $receivedAmount);
@@ -103,8 +106,7 @@ class HomeController extends Controller
         $labels = $recebimentos->pluck('mes_ano')->toArray();
         $data = $recebimentos->pluck('valortotal')->toArray();
 
-        $currentMonthStart = Carbon::now()->startOfMonth();
-        $currentMonthEnd = Carbon::now()->endOfMonth();
+
 
 
         $contasApagar = ContasAPagar::whereIn('status', ['atrasado', 'pendente'])
@@ -118,6 +120,10 @@ class HomeController extends Controller
         $pendente = ContasAReceber::where('status', 'pendente')
             ->where('data_vencimento', '<=', $currentMonthEnd)
             ->sum('valor');
+
+        $groupedByDueDate = ContasAReceber::selectRaw('data_vencimento, SUM(valor) as total_valor')
+            ->groupBy('data_vencimento')
+            ->get();
 
 
         // Retorna a view 'home' com os dados necessários
@@ -133,7 +139,8 @@ class HomeController extends Controller
             'remainingAmount' => $remainingAmount,
             'apagar' => $contasApagar,
             'areceber' => $contasAreceber,
-            'pendente' => $pendente
+            'pendente' => $pendente,
+            'groupedByDueDate' => $groupedByDueDate
 
         ]);
     }
