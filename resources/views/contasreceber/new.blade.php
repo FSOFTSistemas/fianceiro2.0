@@ -39,7 +39,7 @@
                 @foreach($clientes as $cliente)
                     <option value="{{ $cliente->id }}" 
                         {{ (isset($contaAReceber) && $contaAReceber->cliente_id == $cliente->id) ? 'selected' : '' }}>
-                        {{ $cliente->nome_fantasia }}
+                        {{ $cliente->razao_social }}
                     </option>
                 @endforeach
             </select>
