@@ -28,12 +28,24 @@
         @endif
 
         <div class="form-group">
-            <label for="cliente_id">Cliente:</label>
-            <select name="cliente_id" id="cliente_id" class="form-control" {{ isset($contaAReceber) ? 'disabled': '' }}>
+            <label for="cliente_id" class="form-label">Cliente:</label>
+            <select 
+                name="cliente_id" 
+                id="cliente_id" 
+                class="form-select select2" 
+                style="width: 100%;" 
+                {{ isset($contaAReceber) ? 'disabled' : '' }}>
+                <option value="" disabled selected>Selecione um cliente</option>
                 @foreach($clientes as $cliente)
-                <option value="{{ $cliente->id }}" {{ (isset($contaAReceber) && $contaAReceber->cliente_id == $cliente->id) ? 'selected' : '' }}>{{ $cliente->nome_fantasia }}</option>
+                    <option value="{{ $cliente->id }}" 
+                        {{ (isset($contaAReceber) && $contaAReceber->cliente_id == $cliente->id) ? 'selected' : '' }}>
+                        {{ $cliente->nome_fantasia }}
+                    </option>
                 @endforeach
             </select>
+            @if(isset($contaAReceber))
+                <small class="form-text text-muted">Campo desabilitado pois está sendo editado.</small>
+            @endif
         </div>
 
         <div class="form-group">
@@ -75,11 +87,33 @@
 
 @section('css')
 {{-- Add here extra stylesheets --}}
-{{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
+<link rel="stylesheet" href="/css/admin_custom.css">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme/dist/select2-bootstrap-5.min.css" rel="stylesheet" />
+<style>
+    .select2-container--bootstrap-5 .select2-selection {
+        height: calc(2.25rem + 2px); /* Tamanho ajustado */
+        padding: 0.375rem 0.75rem; /* Espaçamento interno */
+        font-size: 1rem; /* Tamanho da fonte */
+        color: #495057; /* Cor do texto */
+        background-color: #fff; /* Fundo */
+        border: 1px solid #ced4da; /* Bordas */
+        border-radius: 0.375rem; /* Bordas arredondadas */
+    }
+</style>
 @stop
 
 @section('js')
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    console.log("Hi, I'm using the Laravel-AdminLTE package!");
+    $(document).ready(function() {
+        $('#cliente_id').select2({
+            theme: 'bootstrap-5', // Ajuste o tema conforme necessário
+            placeholder: "Selecione um cliente",
+            allowClear: true,
+            width: 'resolve' // Ajuste automático da largura ao contêiner
+        });
+    });
 </script>
 @stop
