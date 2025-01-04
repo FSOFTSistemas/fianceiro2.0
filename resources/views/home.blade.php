@@ -119,6 +119,64 @@
     </div>
 </div>
 
+<!-- Card para o gráfico de agrupados por data -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Valores por data</h3>
+    </div>
+    <div class="card-body">
+        <canvas id="pieChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script>
+    var ctx = document.getElementById('pieChart').getContext('2d');
+    var pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: [
+                // Preenchendo com as datas de vencimento
+                @foreach($groupedByDueDate as $group)
+                    "{{ \Carbon\Carbon::parse($group->data_vencimento)->format('d/m/Y') }}",
+                @endforeach
+            ],
+            datasets: [{
+                label: 'Valor Total',
+                data: [
+                    // Preenchendo com os totais por data de vencimento
+                    @foreach($groupedByDueDate as $group)
+                        {{ $group->total_valor }},
+                    @endforeach
+                ],
+                backgroundColor: [
+                    // Define cores para cada setor do gráfico
+                    '#FF5733',
+                    '#33FF57',
+                    '#3357FF',
+                    '#FF33A1',
+                    '#FF9833'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return 'Total: ' + tooltipItem.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
 <!-- Card para o gráfico de recebimentos por mês -->
 <div class="card">
     <div class="card-header">
