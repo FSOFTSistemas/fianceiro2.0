@@ -7,38 +7,40 @@
 @stop
 
 @section('content')
+{{-- linha 1 --}}
+{{-- Clientes cadastrados --}}
 <div class="row">
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-info">
+        <div class="small-box bg-secondary">
             <div class="inner">
-                <h3>150</h3>
-                <p>New Orders</p>
+                <h3>{{ $clientes }}</h3>
+                <p>Clientes cadastrados</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="clientes" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-
+{{-- Contas a receber --}}
     <div class="col-lg-3 col-6">
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>{{ number_format($inadiplencia, 2, '.', '') }}<sup style="font-size: 20px">%</sup></h3>
-                <p>inadimplência</p>
+                <h3>{{ $areceber }}</h3>
+                <p>A receber</p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
             </div>
-            <a href="contasReceber" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="contasReceber" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-
+{{-- Contas a pagar --}}
     <div class="col-lg-3 col-6">
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>{{ $clientes }}</h3>
-                <p>Clientes cadastrados</p>
+                <h3>{{ $apagar }}</h3>
+                <p>Contas a pagar</p>
             </div>
             <div class="icon">
                 <i class="ion ion-person-add"></i>
@@ -47,11 +49,67 @@
         </div>
     </div>
 
+{{-- Atrasados --}}
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>{{ $areceber - $apagar }}</h3>
+                <p>Previsão de resutado</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="contasReceber" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+</div>
+
+{{-- linha 2 --}}
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>{{ $receivedAmount }}</h3>
+                <p>Valor recebido</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-bag"></i>
+            </div>
+            <a href="contasReceber" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>{{ $pendente }}</h3>
+                <p>Valor Pendente</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="contasReceber" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+
     <div class="col-lg-3 col-6">
         <div class="small-box bg-danger">
             <div class="inner">
                 <h3>{{ $tt_atradado }}</h3>
                 <p>Valores em atraso</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person-add"></i>
+            </div>
+            <a href="contasReceber" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>{{ $inadiplencia }}</h3>
+                <p>Inadiplencia %</p>
             </div>
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\ContasAPagar;
 use App\Models\ContasAReceber;
 use Carbon\Carbon;
+use Database\Seeders\ContasReceber;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -101,6 +103,23 @@ class HomeController extends Controller
         $labels = $recebimentos->pluck('mes_ano')->toArray();
         $data = $recebimentos->pluck('valortotal')->toArray();
 
+        $currentMonthStart = Carbon::now()->startOfMonth();
+        $currentMonthEnd = Carbon::now()->endOfMonth();
+
+
+        $contasApagar = ContasAPagar::whereIn('status', ['atrasado', 'pendente'])
+            ->where('data_vencimento', '<=', $currentMonthEnd)
+            ->sum('valor');
+
+        $contasAreceber = ContasAReceber::whereIn('status', ['atrasado', 'pendente'])
+            ->where('data_vencimento', '<=', $currentMonthEnd)
+            ->sum('valor');
+
+        $pendente = ContasAReceber::where('status', 'pendente')
+            ->where('data_vencimento', '<=', $currentMonthEnd)
+            ->sum('valor');
+
+
         // Retorna a view 'home' com os dados necessários
         return view('home', [
             'clientes' => $clientes,
@@ -111,7 +130,11 @@ class HomeController extends Controller
             'contasAtrasadas' => $contasAtrasadas,
             'totalAmount' => $totalAmount,
             'receivedAmount' => $receivedAmount,
-            'remainingAmount' => $remainingAmount
+            'remainingAmount' => $remainingAmount,
+            'apagar' => $contasApagar,
+            'areceber' => $contasAreceber,
+            'pendente' => $pendente
+
         ]);
     }
 
@@ -144,7 +167,7 @@ class HomeController extends Controller
 
 
         $contasAtualizadas = ContasAReceber::where('data_vencimento', '<', $hoje)
-            ->where('status', 'pendente') 
+            ->where('status', 'pendente')
             ->update(['status' => 'atrasado']);
 
         // return response()->json([
