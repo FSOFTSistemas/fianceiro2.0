@@ -23,7 +23,7 @@ class ContasAReceberController extends Controller
      */
     public function create()
     {
-        $cliente = Cliente::all();
+        $cliente = Cliente::orderBy('razao_social', 'asc')->get();
         return view('contasreceber.new', ['clientes' => $cliente]);
     }
 
