@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
             ClienteSeeders::class,
             ContasAPagar::class,
             ContasReceber::class,
-            FluxoDeCaixaSeed::class
+            FluxoDeCaixaSeed::class,
+            UserSeeder::class,
         ]);
     }
 }

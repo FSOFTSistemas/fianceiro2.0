@@ -147,9 +147,9 @@ class HomeController extends Controller
             ->where('status', 'pendente') 
             ->update(['status' => 'atrasado']);
 
-        return response()->json([
-            'message' => 'Status atualizado com sucesso.',
-            'contasAtualizadas' => count($contasAtualizadas)
-        ]);
+        // return response()->json([
+        //     'message' => 'Status atualizado com sucesso.',
+        //     'contasAtualizadas' => count($contasAtualizadas)
+        // ]);
     }
 }
