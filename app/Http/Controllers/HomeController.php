@@ -89,7 +89,7 @@ class HomeController extends Controller
         $atrasados = ContasAReceber::where('status', 'atrasado')->sum('valor');
 
         // Calcula a inadimplência
-        $inadiplencia = $this->calcularInadimplencia();
+        $inadiplencia = round($this->calcularInadimplencia(), 2);
 
         // Calcula o montante total a receber
         $totalAmount = ContasAReceber::whereBetween('data_vencimento', [$currentMonthStart, $currentMonthEnd])
