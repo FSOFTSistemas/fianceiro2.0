@@ -33,7 +33,7 @@ class ContasAPagarController extends Controller
         // Buscando as contas
         $cPagar = $query->OrderByRaw('MONTH(data_vencimento)')->get();
 
-        return view('contasPagar.todos', compact('cPagar'));
+        return view('contaspagar.todos', compact('cPagar'));
     }
 
     /**
