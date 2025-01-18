@@ -26,7 +26,6 @@ class ContasAPagarController extends Controller
 
         // Filtro por data de pagamento
         if ($request->has('data_pagamento_inicio') && $request->data_pagamento_inicio) {
-            dd($request->has('data_pagamento_inicio') );
             $query->whereBetween('data_recebimento', [$request->data_pagamento_inicio, $request->data_pagamento_fim]);
         }
 
