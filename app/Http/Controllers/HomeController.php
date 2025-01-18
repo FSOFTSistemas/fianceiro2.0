@@ -122,12 +122,19 @@ class HomeController extends Controller
             ->sum('valor');
 
 
-        $groupedByDueDate = ContasAReceber::selectRaw('DAY(data_vencimento) as dia, SUM(valor) as total_valor')
-            ->whereBetween('data_vencimento', [$currentMonthStart, $currentMonthEnd])
-            ->groupBy('dia')
-            ->orderBy('dia') 
-            ->get();
+        $groupedByDueDate = ContasAReceber::selectRaw('data_vencimento, SUM(valor) as total_valor')
+            ->whereBetween('data_vencimento', [now()->startOfMonth(), now()->endOfMonth()])
+            ->groupBy('data_vencimento')
+            ->get()
+            ->map(function ($item) {
+                $item->data_vencimento = \Carbon\Carbon::parse($item->data_vencimento)->format('Y-m-d');
+                return $item;
+            });
 
+        $groupedByReceivedDate = ContasAReceber::selectRaw('DATE(data_recebimento) as data_recebimento, SUM(valor) as total_valor')
+            ->whereMonth('data_recebimento', '=', date('m'))
+            ->groupBy('data_recebimento')
+            ->get();
 
         // Retorna a view 'home' com os dados necessários
         return view('home', [
@@ -143,7 +150,8 @@ class HomeController extends Controller
             'apagar' => $contasApagar,
             'areceber' => $contasAreceber,
             'pendente' => $pendente,
-            'groupedByDueDate' => $groupedByDueDate
+            'groupedByDueDate' => $groupedByDueDate,
+            'groupedByReceivedDate' => $groupedByReceivedDate,
 
         ]);
     }
