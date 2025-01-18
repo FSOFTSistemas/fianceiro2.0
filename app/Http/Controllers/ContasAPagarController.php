@@ -22,12 +22,13 @@ class ContasAPagarController extends Controller
 
         // Filtro por data de vencimento
         if ($request->has('data_vencimento_inicio') && $request->data_vencimento_inicio) {
-            $query->whereBetween('data_vencimento', '>=', [$request->data_vencimento_inicio, $request->data_vencimento_fim]);
+            $query->whereBetween('data_vencimento', [$request->data_vencimento_inicio, $request->data_vencimento_fim]);
         }
 
         // Filtro por data de pagamento
         if ($request->has('data_pagamento_inicio') && $request->data_pagamento_inicio) {
-            $query->whereBetween('data_recebimento', '>=', [$request->data_pagamento_inicio, $request->data_pagamento_fim]);
+            dd($request->has('data_pagamento_inicio') );
+            $query->whereBetween('data_recebimento', [$request->data_pagamento_inicio, $request->data_pagamento_fim]);
         }
 
         // Buscando as contas
