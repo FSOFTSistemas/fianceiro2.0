@@ -15,9 +15,8 @@ class ContasAPagarController extends Controller
     {
         $query = ContasAPagar::query();
 
-        // Filtro por status
-        if ($request->has('status') && $request->status != '') {
-            $query->where('status', $request->status);
+        if ($request->has('status') && is_array($request->status)) {
+            $query->whereIn('status', $request->status);
         }
 
         // Filtro por data de vencimento
