@@ -11,10 +11,29 @@ class ContasAPagarController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $contas = ContasAPagar::all();
-        return view('contaspagar.todos', ['cPagar' => $contas]);
+        $query = ContasAPagar::query();
+
+        // Filtro por status
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+
+        // Filtro por data de vencimento
+        if ($request->has('data_vencimento_inicio') && $request->data_vencimento_inicio) {
+            $query->whereBetween('data_vencimento', '>=', [$request->data_vencimento_inicio, $request->data_vencimento_fim]);
+        }
+
+        // Filtro por data de pagamento
+        if ($request->has('data_pagamento_inicio') && $request->data_pagamento_inicio) {
+            $query->whereBetween('data_recebimento', '>=', [$request->data_pagamento_inicio, $request->data_pagamento_fim]);
+        }
+
+        // Buscando as contas
+        $cPagar = $query->OrderByRaw('MONTH(data_vencimento)')->get();
+
+        return view('contasPagar.todos', compact('cPagar'));
     }
 
     /**
