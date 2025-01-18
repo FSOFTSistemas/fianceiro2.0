@@ -3,6 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
+<a class="btn btn-success float-right" style="margin-bottom: 2%" href='/contasPagar/create'>&nbsp; + Incluir &nbsp;</a>
 <div class="row" style="text-align: center">
     <div class="col">
         <h5 class="m-0 text-dark">Contas a pagar</h5>
@@ -16,7 +17,68 @@
 @stop
 
 @section('content')
-<a class="btn btn-info" style="margin-bottom: 2%" href='/contasPagar/create'>&nbsp; + Incluir &nbsp;</a>
+
+<!-- Formulário de Filtro -->
+<form action="{{ route('contasPagar.index') }}" method="GET" class="mb-3">
+    <!-- Card para Data de Vencimento -->
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="m-0 text-dark">Data de Vencimento</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="date" name="data_vencimento_inicio" class="form-control" value="{{ request('data_vencimento_inicio') }}" placeholder="Início">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="date" name="data_vencimento_fim" class="form-control" value="{{ request('data_vencimento_fim') }}" placeholder="Fim">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card para Data de Pagamento -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="m-0 text-dark">Data de Pagamento</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="date" name="data_pagamento_inicio" class="form-control" value="{{ request('data_pagamento_inicio') }}" placeholder="Início">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="date" name="data_pagamento_fim" class="form-control" value="{{ request('data_pagamento_fim') }}" placeholder="Fim">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Filtro de Status -->
+        <div class="col-md-10">
+            <select name="status" class="form-control">
+                <option value="">Status</option>
+                <option value="pendente" {{ request('status') == 'pendente' ? 'selected' : '' }}>Pendente</option>
+                <option value="pago" {{ request('status') == 'pago' ? 'selected' : '' }}>Pago</option>
+                <option value="atrasado" {{ request('status') == 'atrasado' ? 'selected' : '' }}>Atrasado</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary btn-block">Aplicar Filtros</button>
+        </div>
+    </div>
+</form>
+
+
+
 <table id="contas" style="width: 100%;">
     <thead>
         <tr>

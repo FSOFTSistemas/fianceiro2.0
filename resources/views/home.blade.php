@@ -45,7 +45,7 @@
             <div class="icon">
                 <i class="ion ion-person-add"></i>
             </div>
-            <a href="clientes" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="contasPagar" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
 
@@ -122,60 +122,15 @@
 <!-- Card para o gráfico de agrupados por data -->
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Valores por data</h3>
+        <h3 class="card-title">Valores por Data</h3>
     </div>
     <div class="card-body">
         <canvas id="pieChart" width="400" height="200"></canvas>
     </div>
 </div>
 
-<!-- Scripts -->
-<script>
-    var ctx = document.getElementById('pieChart').getContext('2d');
-    var pieChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: [
-                // Preenchendo com as datas de vencimento
-                @foreach($groupedByDueDate as $group)
-                    "{{ \Carbon\Carbon::parse($group->data_vencimento)->format('d/m/Y') }}",
-                @endforeach
-            ],
-            datasets: [{
-                label: 'Valor Total',
-                data: [
-                    // Preenchendo com os totais por data de vencimento
-                    @foreach($groupedByDueDate as $group)
-                        {{ $group->total_valor }},
-                    @endforeach
-                ],
-                backgroundColor: [
-                    // Define cores para cada setor do gráfico
-                    '#FF5733',
-                    '#33FF57',
-                    '#3357FF',
-                    '#FF33A1',
-                    '#FF9833'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(tooltipItem) {
-                            return 'Total: ' + tooltipItem.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                        }
-                    }
-                }
-            }
-        }
-    });
-</script>
+
+
 
 <!-- Card para o gráfico de recebimentos por mês -->
 <div class="card">
@@ -294,5 +249,49 @@
 
 <!-- Inclua o JS do Bootstrap, se necessário -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<!-- Importar Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Script para o gráfico -->
+<script>
+    const labels = @json($groupedByDueDate->pluck('data_vencimento')->map(function($date) {
+        return \Carbon\Carbon::parse($date)->format('d/m/Y');
+    }));
+
+    const dataValues = @json($groupedByDueDate->pluck('total_valor'));
+
+    var ctx = document.getElementById('pieChart').getContext('2d');
+    var pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Valor Total',
+                data: dataValues,
+                backgroundColor: [
+                    '#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FF9833',
+                    '#FFD433', '#33FFF5', '#E833FF', '#82FF33', '#FF5733'
+                ],
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            let value = tooltipItem.raw;
+                            return `Total: ${value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
 
 @stop

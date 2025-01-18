@@ -121,8 +121,11 @@ class HomeController extends Controller
             ->where('data_vencimento', '<=', $currentMonthEnd)
             ->sum('valor');
 
-        $groupedByDueDate = ContasAReceber::selectRaw('data_vencimento, SUM(valor) as total_valor')
-            ->groupBy('data_vencimento')
+
+        $groupedByDueDate = ContasAReceber::selectRaw('DAY(data_vencimento) as dia, SUM(valor) as total_valor')
+            ->whereBetween('data_vencimento', [$currentMonthStart, $currentMonthEnd])
+            ->groupBy('dia')
+            ->orderBy('dia') 
             ->get();
 
 
@@ -174,6 +177,11 @@ class HomeController extends Controller
 
 
         $contasAtualizadas = ContasAReceber::where('data_vencimento', '<', $hoje)
+            ->where('status', 'pendente')
+            ->update(['status' => 'atrasado']);
+
+
+        $contasApagarAtualizadas = ContasAPagar::where('data_vencimento', '<', $hoje)
             ->where('status', 'pendente')
             ->update(['status' => 'atrasado']);
 
