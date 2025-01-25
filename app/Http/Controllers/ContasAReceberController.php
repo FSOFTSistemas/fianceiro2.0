@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\ContasAReceber;
 use App\Services\ContasServices;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ContasAReceberController extends Controller
@@ -21,6 +22,11 @@ class ContasAReceberController extends Controller
         $query->whereBetween('data_vencimento', [
             $request->input('data_inicio'),
             $request->input('data_fim')
+        ]);
+    }else{
+        $query->whereBetween('data_vencimento', [
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->endOfMonth()
         ]);
     }
 

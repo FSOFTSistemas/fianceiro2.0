@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ContasAPagar;
 use App\Services\ContasServices;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ContasAPagarController extends Controller
@@ -22,6 +23,11 @@ class ContasAPagarController extends Controller
         // Filtro por data de vencimento
         if ($request->has('data_vencimento_inicio') && $request->data_vencimento_inicio) {
             $query->whereBetween('data_vencimento', [$request->data_vencimento_inicio, $request->data_vencimento_fim]);
+        }else{
+            $query->whereBetween('data_vencimento', [
+                Carbon::now()->startOfMonth(),
+                Carbon::now()->endOfMonth()
+            ]);
         }
 
         // Filtro por data de pagamento

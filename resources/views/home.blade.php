@@ -59,7 +59,7 @@
                 <div class="icon">
                     <i class="ion ion-pie-graph"></i>
                 </div>
-                <a href="contasReceber" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
     </div>
