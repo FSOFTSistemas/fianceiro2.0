@@ -25,9 +25,9 @@
         {{-- Contas a receber --}}
         <div class="col-lg-2 col-6">
             <a href="contasReceber">
-            <div class="small-box bg-info">
+            <div class="small-box bg-light">
                 <div class="inner">
-                    <h3>{{ $areceber }}</h3>
+                    <h3>{{ number_format($areceber, 2, ',', '.') }}</h3>
                     <p>Total a receber mês</p>
                 </div>
             </div>
@@ -38,7 +38,7 @@
             <a href="contasPagar">
             <div class="small-box bg-warning">
                 <div class="inner">
-                    <h3>{{ $apagar }}</h3>
+                    <h3>{{ number_format($apagar, 2, ',', '.') }}</h3>
                     <p>Total a pagar mês</p>
                 </div>
             </div>
@@ -47,9 +47,9 @@
 
         {{-- Atrasados --}}
         <div class="col-lg-2 col-6">
-            <div class="small-box bg-light">
+            <div class="small-box bg-success">
                 <div class="inner">
-                    <h3>{{ $areceber - $apagar }}</h3>
+                    <h3>{{ number_format($areceber - $apagar, 2, ',', '.') }}</h3>
                     <p>Previsão de resutado</p>
                 </div>
             </div>
@@ -57,9 +57,9 @@
 
         <div class="col-lg-2 col-6">
             <a href="contasReceber">
-            <div class="small-box bg-success">
+            <div class="small-box bg-info">
                 <div class="inner">
-                    <h3>{{ $receivedAmount }}</h3>
+                    <h3>{{ number_format($receivedAmount, 2, ',', '.') }}</h3>
                     <p>Valor recebido</p>
                 </div>
             </div>
@@ -83,7 +83,7 @@
             <a href="contasReceber">
             <div class="small-box bg-danger">
                 <div class="inner">
-                    <h3>{{ $tt_atradado }}</h3>
+                    <h3>{{ number_format($tt_atradado, 2, ',', '.') }}</h3>
                     <p>Valores em atraso</p>
                 </div>
             </div>
@@ -102,6 +102,16 @@
                 <a href="contasReceber" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div> --}}
+    </div>
+
+    <!-- Card para o gráfico de acompanhamento do montante -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3 class="card-title">Acompanhamento do Montante</h3>
+        </div>
+        <div class="card-body">
+            <canvas id="acompanhamentoChart" width="400" height="200"></canvas>
+        </div>
     </div>
 
     <!-- Card para o gráfico -->
@@ -157,15 +167,7 @@
         });
     </script>
 
-    <!-- Card para o gráfico de acompanhamento do montante -->
-    <div class="card mt-4">
-        <div class="card-header">
-            <h3 class="card-title">Acompanhamento do Montante</h3>
-        </div>
-        <div class="card-body">
-            <canvas id="acompanhamentoChart" width="400" height="200"></canvas>
-        </div>
-    </div>
+    
 
 @section('css')
     <style>
@@ -177,7 +179,7 @@
 
     <script>
         // Dados passados do backend para o frontend
-        const totalAmount = @json($totalAmount); // Montante total
+        const totalAmount = parseFloat(@json($totalAmount)).toFixed(2); // Montante total
         const receivedAmount = @json($receivedAmount); // Valor já recebido
 
         // Calcula o valor que falta receber
@@ -200,7 +202,7 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        max: totalAmount, // Define o valor máximo do eixo Y
+                        max: parseFloat(totalAmount),
                         title: {
                             display: true,
                             text: 'Valor (em R$)'

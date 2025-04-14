@@ -53,6 +53,8 @@ class HomeController extends Controller
             ->whereBetween('data_recebimento', [$startDate, $endDate])
             ->groupByRaw('DATE_FORMAT(data_recebimento, "%m/%Y")')
             ->get();
+        
+   
 
         // Consulta para a tabela de contas atrasadas
         $contasAtrasadas = ContasAReceber::where('status', 'atrasado')
