@@ -109,13 +109,9 @@ class HomeController extends Controller
 
 
 
-        $contasApagar = ContasAPagar::whereIn('status', ['atrasado', 'pendente'])
-            ->where('data_vencimento', '<=', $currentMonthEnd)
-            ->sum('valor');
+        $contasApagar = ContasAPagar::whereBetween('data_vencimento', [$currentMonthStart, $currentMonthEnd])->sum('valor');
 
-        $contasAreceber = ContasAReceber::whereIn('status', ['atrasado', 'pendente'])
-            ->where('data_vencimento', '<=', $currentMonthEnd)
-            ->sum('valor');
+        $contasAreceber = ContasAReceber::whereBetween('data_vencimento', [$currentMonthStart, $currentMonthEnd])->sum('valor');
 
         $pendente = ContasAReceber::where('status', 'pendente')
             ->where('data_vencimento', '<=', $currentMonthEnd)
