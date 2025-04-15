@@ -65,7 +65,7 @@
                 <div class="form-group">
                     <label for="data_recebimento">Data de Recebimento:</label>
                     <input type="date" class="form-control" id="data_recebimento" name="data_recebimento"
-                        value="{{ $contaAReceber->data_recebimento ?? '' }}">
+                        value="{{ $contaAReceber->data_recebimento ?? '' }}" disabled>
                 </div>
             @endif
 
@@ -112,5 +112,13 @@
                 width: '100%',
             });
         });
+        
+        $('#status').on('change', function () {
+            if ($(this).val() === 'recebido') {
+                $('#data_recebimento').prop('disabled', false);
+            } else {
+                $('#data_recebimento').prop('disabled', true);
+            }
+        }).trigger('change'); // para aplicar a lógica já ao carregar a página
     </script>
 @stop

@@ -14,32 +14,32 @@ class ContasAReceberController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-{
-    $query = ContasAReceber::query();
+    {
+        $query = ContasAReceber::query();
 
-    // Filtrar por intervalo de datas
-    if ($request->filled('data_inicio') && $request->filled('data_fim')) {
-        $query->whereBetween('data_vencimento', [
-            $request->input('data_inicio'),
-            $request->input('data_fim')
-        ]);
-    }else{
-        $query->whereBetween('data_vencimento', [
-            Carbon::now()->startOfMonth(),
-            Carbon::now()->endOfMonth()
-        ]);
+        // Filtrar por intervalo de datas
+        if ($request->filled('data_inicio') && $request->filled('data_fim')) {
+            $query->whereBetween('data_vencimento', [
+                $request->input('data_inicio'),
+                $request->input('data_fim')
+            ]);
+        } else {
+            $query->whereBetween('data_vencimento', [
+                Carbon::now()->startOfMonth(),
+                Carbon::now()->endOfMonth()
+            ]);
+        }
+
+        // Filtrar por status
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        // Obter dados e carregar com relacionamentos
+        $aReceber = $query->with('cliente')->orderByRaw('MONTH(data_vencimento)')->get();
+
+        return view('contasreceber.todos', compact('aReceber'));
     }
-
-    // Filtrar por status
-    if ($request->filled('status')) {
-        $query->where('status', $request->input('status'));
-    }
-
-    // Obter dados e carregar com relacionamentos
-    $aReceber = $query->with('cliente')->orderByRaw('MONTH(data_vencimento)')->get();
-
-    return view('contasreceber.todos', compact('aReceber'));
-}
     /**
      * Show the form for creating a new resource.
      */
@@ -141,15 +141,50 @@ class ContasAReceberController extends Controller
         }
     }
 
-    public function informarPagamento(){
+    public function informarPagamento()
+    {
         $clientes = Cliente::all();
-        return view('contasreceber.pagamento',['clientes' => $clientes]);
+        return view('contasreceber.pagamento', ['clientes' => $clientes]);
     }
 
-    public function contasCliente($idCliente){
+    public function contasCliente($idCliente)
+    {
         $contas = ContasAReceber::where('cliente_id', $idCliente)->get();
 
-        return view('contasreceber.contas',['Conta' => $contas]);
+        return view('contasreceber.contas', ['Conta' => $contas]);
+    }
 
+    public function contasPagas()
+    {
+        $contas = ContasAReceber::where('status', 'recebido')
+            ->whereBetween('data_vencimento', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
+            ->orderByDesc('data_recebimento')
+            ->with('cliente')
+            ->get();
+
+        return view('contasreceber.pagas', compact('contas'));
+    }
+
+    public function contasPendentes()
+    {
+        $contas = ContasAReceber::where('status', 'pendente')
+            ->whereBetween('data_vencimento', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
+            ->orderByDesc('data_vencimento')
+            ->with('cliente')
+            ->get();
+
+        return view('contasreceber.pagas', compact('contas'));
+    }
+
+    public function contasAtrasadas()
+    {
+        $contas = ContasAReceber::where('status', 'atrasado')
+            ->where('data_vencimento', '<', Carbon::now())
+            ->orderByDesc('data_vencimento')
+            ->with('cliente')
+            ->get();
+
+
+        return view('contasreceber.pagas', compact('contas'));
     }
 }

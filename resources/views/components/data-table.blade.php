@@ -1,5 +1,6 @@
 @php
     $uniqueId = 'myTable_' . uniqid();
+    $orderByIndex = $orderByIndex ?? 0;
 @endphp
 
 <table id="{{ $uniqueId }}" style="width: 100%">
@@ -64,6 +65,7 @@
             responsive: true,
             pageLength: {{ $itemsPerPage }},
             columnDefs: {{ Js::from($responsive) }},
+            order: [[{{ $orderByIndex }}, 'desc']],
 
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'

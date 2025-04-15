@@ -3,7 +3,7 @@
 @section('title', 'Contas a receber')
 
 @section('content_header')
-<a class="btn btn-success float-right mb-3" href='/contasReceber/create'>&nbsp; + Incluir &nbsp;</a>
+    <a class="btn btn-success float-right mb-3" href='/contasReceber/create'>&nbsp; + Incluir &nbsp;</a>
     <div class="row" style="text-align: center">
         <div class="col">
             <h4 class="m-0 text-dark">Contas a receber</h4>
@@ -45,7 +45,7 @@
         </div>
     </form>
 
-    
+
     <table id="contas" style="width: 100%;">
         <thead class="table-primary">
             <tr>
@@ -56,6 +56,7 @@
                 <th>Valor original</th>
                 <th>Valor pago</th>
                 <th>Situação</th>
+                <th> $ </th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -73,6 +74,16 @@
                         </span>
                     </td>
                     <td>
+                        <div class="col">
+                            <a class="text-success" title="Receber" data-toggle="modal" data-target=".bd-receber-modal-lg"
+                                onclick="abrirModalReceber({{ $receber->id }}, '{{ $receber->valor }}')">
+                                <button class="btn btn-sm btn-success">
+                                    Receber
+                                </button>
+                            </a>
+                        </div>
+                    </td>
+                    <td>
                         <div class="row">
                             <div class="col">
                                 <a class="text-warning" title="Editar"
@@ -81,7 +92,8 @@
 
                             <div class="col">
                                 <a class="text-danger" title="Excluir" onclick="setaDadosModal({{ $receber->id }})"><i
-                                        data-toggle="modal" data-target=".bd-delete-modal-lg" class="fa fa-trash"></i></a>
+                                        data-toggle="modal" data-target=".bd-delete-modal-lg" class="fa fa-trash"></i>
+                                </a>
                             </div>
                         </div>
                     </td>
@@ -90,6 +102,7 @@
         </tbody>
         <tfoot>
             <tr>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -145,6 +158,30 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bd-receber-modal-lg" tabindex="-1" role="dialog" aria-labelledby="receberModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h4 class="modal-title w-100 text-center">Confirmar recebimento</h4>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>Tem certeza que deseja marcar esta conta como <strong>Recebida</strong>?</p>
+                    <p id="valorReceberTexto" class="font-weight-bold text-success"></p>
+                    <form action="{{ route('pagamentos.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="payment_id" id="payment_id" value="">
+                        <button type="submit" class="btn btn-success">Confirmar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -210,6 +247,11 @@
             document.getElementById('idContaM').value = idContas;
         }
 
+        function abrirModalReceber(id, valor) {
+            document.getElementById('payment_id').value = id;
+            document.getElementById('valorReceberTexto').innerText = 'Valor: R$ ' + parseFloat(valor).toFixed(2);
+        }
+
         $(document).ready(function() {
             $('#contas').DataTable({
                 responsive: true,
@@ -219,7 +261,7 @@
                 ],
                 columnDefs: [{
                         responsivePriority: 1,
-                        targets: 0
+                        targets: 1
                     },
                     {
                         responsivePriority: 2,

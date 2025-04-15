@@ -44,8 +44,6 @@ class PaymentController extends Controller
     {
         $data = $request->validate([
             'payment_id' => ['required', 'numeric'],
-            'account_plan_id' => ['required', 'numeric'],
-            'payment_method' => ['required', Rule::enum(PaymentMethodEnum::class)]
         ]);
         DB::transaction(function () use ($data) {
             $payment = ContasAReceber::findOrFail($data['payment_id']);
@@ -58,11 +56,11 @@ class PaymentController extends Controller
                 'valor' => $payment->valor,
                 'data_transacao' => $payment->data_recebimento,
                 'tipo' => 'entrada',
-                'plano_contas_id' => $data['account_plan_id']
+                'plano_contas_id' => 1
             ]);
         });
         sweetalert('Pagamento efetuado com sucesso!');
-        return Redirect::route('pagamentos.index');
+        return Redirect::route('contasReceber.index');
     }
 
     /**

@@ -10,22 +10,10 @@
     {{-- linha 1 --}}
     {{-- Clientes cadastrados --}}
     <div class="row">
-        {{-- <div class="col-lg-3 col-6">
-            <div class="small-box bg-light">
-                <div class="inner">
-                    <h3>{{ $clientes }}</h3>
-                    <p>Clientes cadastrados</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-bag"></i>
-                </div>
-                <a href="clientes" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-        </div> --}}
         {{-- Contas a receber --}}
-        <div class="col-lg-2 col-6">
+        <div class="col-lg-3 col-6">
             <a href="contasReceber">
-            <div class="small-box bg-light">
+            <div class="small-box bg-info">
                 <div class="inner">
                     <h3>{{ number_format($areceber, 2, ',', '.') }}</h3>
                     <p>Total a receber mês</p>
@@ -34,7 +22,7 @@
         </a>
         </div>
         {{-- Contas a pagar --}}
-        <div class="col-lg-2 col-6">
+        <div class="col-lg-3 col-6">
             <a href="contasPagar">
             <div class="small-box bg-warning">
                 <div class="inner">
@@ -45,8 +33,21 @@
             </a>
         </div>
 
-        {{-- Atrasados --}}
-        <div class="col-lg-2 col-6">
+        
+        
+        <div class="col-lg-3 col-6">
+            <a href="contasReceber">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>{{ number_format($tt_atradado, 2, ',', '.') }}</h3>
+                        <p>Valores em atraso</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {{-- previsao de resultado --}}
+        <div class="col-lg-3 col-6">
             <div class="small-box bg-success">
                 <div class="inner">
                     <h3>{{ number_format($areceber - $apagar, 2, ',', '.') }}</h3>
@@ -54,54 +55,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="col-lg-2 col-6">
-            <a href="contasReceber">
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <h3>{{ number_format($receivedAmount, 2, ',', '.') }}</h3>
-                    <p>Valor recebido</p>
-                </div>
-            </div>
-            </a>
-        </div>
-
-        {{-- <div class="col-lg-3 col-6">
-            <div class="small-box bg-custom-gray">
-                <div class="inner">
-                    <h3>{{ $pendente }}</h3>
-                    <p>Valor Pendente</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-stats-bars"></i>
-                </div>
-                <a href="contasReceber" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-        </div> --}}
-
-        <div class="col-lg-2 col-6">
-            <a href="contasReceber">
-            <div class="small-box bg-danger">
-                <div class="inner">
-                    <h3>{{ number_format($tt_atradado, 2, ',', '.') }}</h3>
-                    <p>Valores em atraso</p>
-                </div>
-            </div>
-            </a>
-        </div>
-
-        {{-- <div class="col-lg-3 col-6">
-            <div class="small-box bg-custom-gray">
-                <div class="inner">
-                    <h3>{{ $inadiplencia }}</h3>
-                    <p>Inadiplencia %</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-pie-graph"></i>
-                </div>
-                <a href="contasReceber" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-        </div> --}}
     </div>
 
     <!-- Card para o gráfico de acompanhamento do montante -->
