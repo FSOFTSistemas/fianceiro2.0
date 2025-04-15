@@ -265,7 +265,7 @@
                     },
                     {
                         responsivePriority: 2,
-                        targets: 4
+                        targets: 7
                     },
                     {
                         responsivePriority: 2,

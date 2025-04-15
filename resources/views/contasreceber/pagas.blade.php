@@ -8,8 +8,8 @@
 @section('content')
     <x-data-table :itemsPerPage="50" :valueColumnIndex="2" :orderByIndex="4" :responsive="[
         ['targets' => 0, 'responsivePriority' => 1],
-        ['targets' => 1, 'responsivePriority' => 2],
-        ['targets' => '_all', 'responsivePriority' => 1000]
+        ['targets' => 3, 'responsivePriority' => 2],
+        ['targets' => -1, 'responsivePriority' => 3]
     ]" :showTotal="true">
 
         <thead>
