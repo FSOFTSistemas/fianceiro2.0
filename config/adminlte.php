@@ -333,8 +333,29 @@ return [
         ],
         [
             'text' => 'Contas a pagar',
-            'url' => '/contasPagar',
-            'icon' => 'fas fa-fw fa-file-invoice-dollar'
+            'icon' => 'fas fa-fw fa-file-invoice-dollar',
+            'submenu' => [
+                [
+                    'text' => 'Todas',
+                    'url'  => '/contasPagar',
+                    'icon' => 'fas fa-list',
+                ],
+                [
+                    'text' => 'Pagas',
+                    'url'  => '/contasAPagar/pagas',
+                    'icon' => 'fas fa-check-circle text-success',
+                ],
+                [
+                    'text' => 'Pendentes',
+                    'url'  => '/contasAPagar/pendentes',
+                    'icon' => 'fas fa-hourglass-half text-warning',
+                ],
+                [
+                    'text' => 'Em Atraso',
+                    'url'  => '/contasAPagar/atrasadas',
+                    'icon' => 'fas fa-exclamation-circle text-danger',
+                ],
+            ],
         ],
         [
             'text' => 'Fluxo de caixa',

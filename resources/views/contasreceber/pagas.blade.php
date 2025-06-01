@@ -6,11 +6,11 @@
     <h1>Contas a Receber </h1>
 @stop
 @section('content')
-    <x-data-table :itemsPerPage="50" :valueColumnIndex="2" :orderByIndex="4" :responsive="[
+    <x-data-table :itemsPerPage="50" :valueColumnIndex="3" :orderByIndex="4" :responsive="[
         ['targets' => 0, 'responsivePriority' => 1],
         ['targets' => 3, 'responsivePriority' => 2],
         ['targets' => -1, 'responsivePriority' => 3]
-    ]" :showTotal="true">
+    ]" :showTotal="false">
 
         <thead>
             <tr>

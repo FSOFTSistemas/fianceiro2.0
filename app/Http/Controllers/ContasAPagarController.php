@@ -15,7 +15,6 @@ class ContasAPagarController extends Controller
     public function index(Request $request)
     {
         $query = ContasAPagar::query();
-
         if ($request->has('status') && is_array($request->status)) {
             $query->whereIn('status', $request->status);
         }
@@ -23,12 +22,13 @@ class ContasAPagarController extends Controller
         // Filtro por data de vencimento
         if ($request->has('data_vencimento_inicio') && $request->data_vencimento_inicio) {
             $query->whereBetween('data_vencimento', [$request->data_vencimento_inicio, $request->data_vencimento_fim]);
-        }else{
+        } else {
             $query->whereBetween('data_vencimento', [
                 Carbon::now()->startOfMonth(),
                 Carbon::now()->endOfMonth()
             ]);
         }
+
 
         // Filtro por data de pagamento
         if ($request->has('data_pagamento_inicio') && $request->data_pagamento_inicio) {
@@ -134,4 +134,65 @@ class ContasAPagarController extends Controller
         sweetalert('Deletado com sucesso !');
         return redirect()->route('contasPagar.index');
     }
+
+    public function contasPagarPagas(Request $request)
+    {
+        $query = ContasAPagar::where('status', 'pago');
+
+        if ($request->filled('mes')) {
+            $mes = $request->mes;
+            $query->whereMonth('data_pagamento', $mes);
+        } else {
+            $query->whereBetween('data_pagamento', [
+                Carbon::now()->startOfMonth(),
+                Carbon::now()->endOfMonth()
+            ]);
+        }
+
+        $cPagar = $query->orderByDesc('data_pagamento')->get();
+
+        return view('contaspagar.pagas', compact('cPagar'));
+    }
+
+    public function contasPendentes()
+    {
+        $contas = ContasAPagar::where('status', 'pendente')
+            ->whereBetween('data_vencimento', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
+            ->orderByDesc('data_vencimento')
+            ->get();
+
+        return view('contaspagar.pendentes', compact('contas'));
+    }
+
+    public function contasAtrasadas()
+    {
+        $contas = ContasAPagar::where('status', 'atrasado')
+            ->where('data_vencimento', '<', Carbon::now())
+            ->orderByDesc('data_vencimento')
+            ->get();
+
+        return view('contaspagar.atrasadas', compact('contas'));
+    }
+
+    public function pagar(Request $request, $id)
+    {
+        $request->validate([
+            'data_pagamento' => 'required|date',
+            'valor' => 'required|numeric'
+        ]);
+    
+        $conta = ContasAPagar::findOrFail($id);
+        $conta->update([
+            'data_pagamento' => $request->data_pagamento,
+            'valor' => $request->valor,
+            'status' => 'pago'
+        ]);
+    
+        sweetalert('Pagamento registrado com sucesso!');
+        return redirect()->back();
+    }
 }
+
+    /**
+     * Marca a conta como paga, atualizando status, data_pagamento e valor.
+     */

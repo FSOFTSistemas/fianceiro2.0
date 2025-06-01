@@ -74,6 +74,7 @@
                         </span>
                     </td>
                     <td>
+                        @if($receber->status != 'recebido' )
                         <div class="col">
                             <a class="text-success" title="Receber" data-toggle="modal" data-target=".bd-receber-modal-lg"
                                 onclick="abrirModalReceber({{ $receber->id }}, '{{ $receber->valor }}')">
@@ -82,6 +83,7 @@
                                 </button>
                             </a>
                         </div>
+                        @endif
                     </td>
                     <td>
                         <div class="row">
