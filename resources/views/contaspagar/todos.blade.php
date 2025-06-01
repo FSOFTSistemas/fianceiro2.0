@@ -64,131 +64,105 @@
             </div>
         </div>
 
-        <div class="row">
-            <!-- Filtro de Status -->
-            <div class="col-md-10">
-                <select class="js-example-basic-multiple w-100" name="status[]" multiple="multiple">
-                    <option value="">Status</option>
-                    <option value="pendente" {{ request('status') == 'pendente' ? 'selected' : '' }}>Pendente</option>
-                    <option value="pago" {{ request('status') == 'pago' ? 'selected' : '' }}>Pago</option>
-                    <option value="atrasado" {{ request('status') == 'atrasado' ? 'selected' : '' }}>Atrasado</option>
-                </select>
+        <!-- Card para Status -->
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h6 class="m-0 text-dark">Status</h6>
+                    </div>
+                    <div class="card-body d-flex justify-content-center">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="status[]" value="pendente"
+                                id="status_pendente"
+                                {{ is_array(request('status')) && in_array('pendente', request('status')) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="status_pendente">Pendente</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="status[]" value="pago" id="status_pago"
+                                {{ is_array(request('status')) && in_array('pago', request('status')) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="status_pago">Pago</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="status[]" value="atrasado"
+                                id="status_atrasado"
+                                {{ is_array(request('status')) && in_array('atrasado', request('status')) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="status_atrasado">Atrasado</label>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary btn-block">Aplicar Filtros</button>
+        </div>
+
+        <!-- Botão de filtro -->
+        <div class="row mb-3">
+            <div class="col text-center">
+                <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
             </div>
         </div>
     </form>
 
-
-
-    <table id="contas" style="width: 100%;">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Descrição</th>
-                <th>Valor</th>
-                <th>Dt. Vencimento</th>
-                <th>Dt. Pagamento</th>
-                <th>Situação</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($cPagar as $conta)
+    <div>
+        @component('components.data-table', [
+            'uniqueId' => 'contasPagar',
+            'orderByIndex' => 0,
+            'valueColumnIndex' => 2,
+            'itemsPerPage' => 50,
+            'responsive' => [['targets' => [0], 'className' => 'all'], ['targets' => '_all', 'className' => 'dt-body-left']],
+            'showTotal' => true,
+        ])
+            <thead>
                 <tr>
-                    <td>{{ $conta->id }}</td>
-                    <td>{{ $conta->descricao }}</td>
-                    <td>{{ $conta->valor }}</td>
-                    <td>{{ date('d/m/Y', strtotime($conta->data_vencimento)) }}</td>
-                    <td>{{ $conta->data_recebimento ? date('d/m/Y', strtotime($conta->data_recebimento)) : '' }}</td>
-                    <td>
-                        <span class="<?php echo $conta->status == 'pendente' ? 'pendente' : ($conta->status == 'pago' ? 'pago' : 'atrasado'); ?>" id="estado">{{ $conta->status }}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="row">
-                            <div class="col">
-                                <a class="text-warning" title="Editar" href="{{ route('contasPagar.edit', $conta) }}"><i
-                                        class="fa fa-edit"></i></a>
-                            </div>
-
-                            <div class="col">
-                                <a class="text-danger" title="Excluir" onclick="setaDadosModal({{ $conta->id }})"><i
-                                        data-toggle="modal" data-target=".bd-delete-modal-lg" class="fa fa-trash"></i></a>
-                            </div>
-                        </div>
-                    </td>
+                    <th>ID</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>Dt. Vencimento</th>
+                    <th>Dt. Pagamento</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
                 </tr>
-            @endforeach
-        </tbody>
-        <tfoot>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </tfoot>
-    </table>
-
-
-    <!-- Modal -->
-    <div class="modal fade bd-delete-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-md modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-
-                    <div class="col" style="text-align: center">
-                        <div class="modal-title" style="text: center">
-                            <h4>Apagar esta conta?</h4>
-                        </div>
-                    </div>
-
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-
-                    <p style="color: red; text-align: center">Atenção: esssa ação não tem volta !
-                    </p>
-
-                    <div class="" style="text-align: center">
-
-                        <form action="{{ route('delete-contasPagar') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            @method('DELETE')
-                            <div class="form-group">
-                                <input type="hidden" step="0.01" class="form-control" id="idContaM"
-                                    name="idContaM" value="">
+            </thead>
+            <tbody>
+                @foreach ($cPagar as $conta)
+                    <tr>
+                        <td>{{ $conta->id }}</td>
+                        <td>{{ $conta->descricao }}</td>
+                        <td>{{ $conta->valor }}</td>
+                        <td>{{ date('d/m/Y', strtotime($conta->data_vencimento)) }}</td>
+                        <td>{{ $conta->data_recebimento ? date('d/m/Y', strtotime($conta->data_recebimento)) : '' }}</td>
+                        <td>
+                            @if ($conta->status == 'pendente')
+                                <span class="badge bg-warning text-dark">Pendente</span>
+                            @elseif ($conta->status == 'pago')
+                                <span class="badge bg-success">Pago</span>
+                            @else
+                                <span class="badge bg-danger">Atrasado</span>
+                            @endif
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a class="btn btn-sm btn-warning" title="Editar"
+                                    href="{{ route('contasPagar.edit', $conta) }}"><i class="fa fa-edit"></i></a>
+                                <button class="btn btn-sm btn-danger" title="Excluir"
+                                    onclick="setaDadosModal({{ $conta->id }})" data-bs-toggle="modal"
+                                    data-bs-target=".bd-delete-modal-lg"><i class="fa fa-trash"></i></button>
+                                @if ($conta->status != 'pago')
+                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal-{{ $conta->id }}">💰 Pagar</button>
+                                @endif
                             </div>
 
-                            <div class="text-center">
-                                <button type="submit" style="width: 50%;" class="btn btn-danger">EXCLUIR</button>
-                            </div>
-                            <br>
-                        </form>
-
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
+                        </td>
+                    </tr>
+                    @include('contaspagar.modals.delete', ['conta' => $conta])
+                    @include('contaspagar.modals.informarPagamento', ['conta' => $conta])
+                @endforeach
+            </tbody>
+        @endcomponent
     </div>
-    <!-- Fim modal -->
 @stop
 
 @section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link
         href="https://cdn.datatables.net/v/dt/jszip-3.10.1/dt-2.0.1/b-3.0.0/b-colvis-3.0.0/b-html5-3.0.0/b-print-3.0.0/cr-2.0.0/date-1.5.2/r-3.0.0/sr-1.4.0/datatables.min.css"
@@ -245,80 +219,11 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            $('.js-example-basic-multiple').select2();
-        });
-    </script>
+    <!-- select2 initialization removed as no longer needed -->
     <script>
         function setaDadosModal(idContas) {
             document.getElementById('idContaM').value = idContas;
         }
-
-        $(document).ready(function() {
-            $('#contas').DataTable({
-                responsive: true,
-                pageLength: 50,
-                "order": [
-                    [6, "asc"]
-                ],
-                columnDefs: [{
-                        responsivePriority: 1,
-                        targets: 0
-                    },
-                    {
-                        responsivePriority: 2,
-                        targets: 5
-                    },
-
-                ],
-                language: {
-                    url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json',
-                },
-                footerCallback: function(row, data, start, end, display) {
-                    let api = this.api();
-                    let total = api.column(2).data().reduce(function(a, b) {
-                        return a + parseFloat(b)
-                    }, 0)
-                    let pageTotal = api.column(2, {
-                        page: 'current'
-                    }).data().reduce(function(a, b) {
-                        return a + parseFloat(b);
-                    }, 0);
-                    $(api.column(6).footer()).html('Total da página: R$ ' + pageTotal.toFixed(2) +
-                        ' de (R$ ' + total.toFixed(2) + ')');
-                },
-                fixedHeader: {
-                    header: false,
-                    footer: true
-                },
-                layout: {
-                    topStart: 'buttons',
-                    top2Start: 'pageLength'
-                },
-                buttons: [{
-                        extend: 'copyHtml5',
-                        text: '<i class="fa fa-clone text-secondary"></i>',
-                        titleAttr: 'Copiar',
-                        download: 'open'
-                    },
-                    {
-                        extend: 'excelHtml5',
-                        text: '<i class="fa fa-file-excel text-success"></i>',
-                        titleAttr: 'Excel',
-                        download: 'open',
-                        title: 'Relatório de Clientes'
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        text: '<i class="fa fa-file-pdf text-danger"></i>',
-                        titleAttr: 'PDF',
-                        download: 'open',
-                        title: 'Relatório de Clientes'
-                    }
-                ]
-            });
-        });
     </script>
 
 @stop

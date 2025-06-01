@@ -10,112 +10,60 @@
     {{-- linha 1 --}}
     {{-- Clientes cadastrados --}}
     <div class="row">
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-secondary">
-                <div class="inner">
-                    <h3>{{ $clientes }}</h3>
-                    <p>Clientes cadastrados</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-bag"></i>
-                </div>
-                <a href="clientes" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-        </div>
         {{-- Contas a receber --}}
         <div class="col-lg-3 col-6">
-            <div class="small-box bg-success">
+            <a href="contasReceber">
+            <div class="small-box bg-info">
                 <div class="inner">
-                    <h3>{{ $areceber }}</h3>
-                    <p>A receber</p>
+                    <h3>{{ number_format($areceber, 2, ',', '.') }}</h3>
+                    <p>Total a receber mês</p>
                 </div>
-                <div class="icon">
-                    <i class="ion ion-stats-bars"></i>
-                </div>
-                <a href="contasReceber" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
             </div>
+        </a>
         </div>
         {{-- Contas a pagar --}}
         <div class="col-lg-3 col-6">
+            <a href="contasPagar">
             <div class="small-box bg-warning">
                 <div class="inner">
-                    <h3>{{ $apagar }}</h3>
-                    <p>Contas a pagar</p>
+                    <h3>{{ number_format($apagar, 2, ',', '.') }}</h3>
+                    <p>Total a pagar mês</p>
                 </div>
-                <div class="icon">
-                    <i class="ion ion-person-add"></i>
-                </div>
-                <a href="contasPagar" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
             </div>
+            </a>
         </div>
 
-        {{-- Atrasados --}}
+        
+        
         <div class="col-lg-3 col-6">
-            <div class="small-box bg-info">
+            <a href="contasReceber">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>{{ number_format($tt_atradado, 2, ',', '.') }}</h3>
+                        <p>Valores em atraso</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {{-- previsao de resultado --}}
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-success">
                 <div class="inner">
-                    <h3>{{ $areceber - $apagar }}</h3>
+                    <h3>{{ number_format($areceber - $apagar, 2, ',', '.') }}</h3>
                     <p>Previsão de resutado</p>
                 </div>
-                <div class="icon">
-                    <i class="ion ion-pie-graph"></i>
-                </div>
-                <a href="#" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
     </div>
 
-    {{-- linha 2 --}}
-    <div class="row">
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-warning">
-                <div class="inner">
-                    <h3>{{ $receivedAmount }}</h3>
-                    <p>Valor recebido</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-bag"></i>
-                </div>
-                <a href="contasReceber" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
+    <!-- Card para o gráfico de acompanhamento do montante -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3 class="card-title">Acompanhamento do Montante</h3>
         </div>
-
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-success">
-                <div class="inner">
-                    <h3>{{ $pendente }}</h3>
-                    <p>Valor Pendente</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-stats-bars"></i>
-                </div>
-                <a href="contasReceber" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-danger">
-                <div class="inner">
-                    <h3>{{ $tt_atradado }}</h3>
-                    <p>Valores em atraso</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-person-add"></i>
-                </div>
-                <a href="contasReceber" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-danger">
-                <div class="inner">
-                    <h3>{{ $inadiplencia }}</h3>
-                    <p>Inadiplencia %</p>
-                </div>
-                <div class="icon">
-                    <i class="ion ion-pie-graph"></i>
-                </div>
-                <a href="contasReceber" class="small-box-footer">Detalhes <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
+        <div class="card-body">
+            <canvas id="acompanhamentoChart" width="400" height="200"></canvas>
         </div>
     </div>
 
@@ -172,19 +120,19 @@
         });
     </script>
 
-    <!-- Card para o gráfico de acompanhamento do montante -->
-    <div class="card mt-4">
-        <div class="card-header">
-            <h3 class="card-title">Acompanhamento do Montante</h3>
-        </div>
-        <div class="card-body">
-            <canvas id="acompanhamentoChart" width="400" height="200"></canvas>
-        </div>
-    </div>
+    
+
+@section('css')
+    <style>
+        .bg-custom-gray {
+            background-color: #d3d3d3; /* Você pode substituir este valor pelo código hexadecimal da cor desejada */
+        }
+    </style>
+@endsection
 
     <script>
         // Dados passados do backend para o frontend
-        const totalAmount = @json($totalAmount); // Montante total
+        const totalAmount = parseFloat(@json($totalAmount)).toFixed(2); // Montante total
         const receivedAmount = @json($receivedAmount); // Valor já recebido
 
         // Calcula o valor que falta receber
@@ -207,7 +155,7 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        max: totalAmount, // Define o valor máximo do eixo Y
+                        max: parseFloat(totalAmount),
                         title: {
                             display: true,
                             text: 'Valor (em R$)'
